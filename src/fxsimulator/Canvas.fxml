@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import jfxtras.labs.scene.layout.ScalableContentPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="823.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.CanvasController">
+   <children>
+      <ScalableContentPane fx:id="canvas" layoutX="200.0" layoutY="-3.0" prefHeight="590.0" prefWidth="623.0" style="-fx-background-color: #dfe4ea;" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0" />
+      <AnchorPane prefHeight="580.0" prefWidth="200.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <JFXButton fx:id="canvasBackButton" contentDisplay="GRAPHIC_ONLY" prefHeight="30.0" prefWidth="34.0">
+               <graphic>
+                  <ImageView fx:id="canvasBack" fitHeight="29.0" fitWidth="28.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../res/arrow_back_black_96x96.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="519.0" prefHeight="61.0" prefWidth="181.0" spacing="10.0" AnchorPane.bottomAnchor="0.0">
+               <children>
+                  <JFXButton fx:id="clearButton" buttonType="RAISED" prefHeight="31.0" prefWidth="76.0" style="-fx-background-color: #21759b;" text="CLEAR" textFill="#d3c5c5">
+                     <font>
+                        <Font name="Junction Regular Regular" size="13.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="resetButton" buttonType="RAISED" prefHeight="31.0" prefWidth="76.0" style="-fx-background-color: #21759b;" text="RESET" textFill="#d3c5c5">
+                     <font>
+                        <Font name="Junction Regular Regular" size="13.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+               </padding>
+            </HBox>
+            <GridPane layoutY="65.0" prefHeight="142.0" prefWidth="200.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label prefHeight="31.0" prefWidth="106.0" text="Algorithms" textFill="#0d0d0d" underline="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="Segoe UI Historic" size="21.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets bottom="10.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <JFXButton fx:id="dfsButton" graphicTextGap="2.0" prefHeight="37.0" prefWidth="205.0" text="DFS" textFill="#1e1d1d" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="Quicksand-Regular" size="16.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="-120.0" />
+                     </padding>
+                     <graphic>
+                        <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/ButtonDot.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin>
+                  </JFXButton>
+                  <JFXButton fx:id="bfsButton" graphicTextGap="2.0" prefHeight="36.0" prefWidth="200.0" text="BFS" textFill="#1b1a1a" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Quicksand-Regular" size="16.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <graphic>
+                        <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/ButtonDot.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="-120.0" />
+                     </padding>
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin>
+                  </JFXButton>
+               </children>
+            </GridPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
