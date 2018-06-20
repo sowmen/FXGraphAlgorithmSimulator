@@ -66,15 +66,16 @@
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                </padding>
             </HBox>
-            <GridPane hgap="10.0" layoutY="65.0" prefHeight="142.0" prefWidth="200.0" vgap="5.0">
+            <GridPane hgap="10.0" layoutY="60.0" prefHeight="197.0" prefWidth="200.0" vgap="5.0">
                <columnConstraints>
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="45.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="42.0" valignment="CENTER" />
+                  <RowConstraints maxHeight="25.0" minHeight="5.0" prefHeight="15.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label prefHeight="31.0" prefWidth="106.0" text="Algorithms" textFill="#0d0d0d" underline="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -85,16 +86,13 @@
                         <Insets bottom="10.0" />
                      </GridPane.margin>
                   </Label>
-                  <JFXButton fx:id="dfsButton" graphicTextGap="2.0" prefHeight="37.0" prefWidth="205.0" style="-fx-background-color: #5C6BC0;" text="DFS" textFill="#1e1d1d" GridPane.rowIndex="2">
+                  <JFXButton fx:id="dfsButton" graphicTextGap="2.0" onAction="#DFSHandle" prefHeight="35.0" prefWidth="134.0" style="-fx-background-color: #5C6BC0;" text="DFS" textFill="#1e1d1d" GridPane.rowIndex="2">
                      <font>
                         <Font name="Quicksand-Regular" size="16.0" />
                      </font>
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
-                     <padding>
-                        <Insets left="-120.0" />
-                     </padding>
                      <graphic>
                         <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -103,13 +101,16 @@
                         </ImageView>
                      </graphic>
                      <GridPane.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets left="20.0" />
                      </GridPane.margin>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                     <padding>
+                        <Insets right="30.0" />
+                     </padding>
                   </JFXButton>
-                  <JFXButton fx:id="bfsButton" graphicTextGap="2.0" prefHeight="36.0" prefWidth="200.0" style="-fx-background-color: #5C6BC0;" text="BFS" textFill="#1b1a1a" GridPane.rowIndex="1">
+                  <JFXButton fx:id="bfsButton" graphicTextGap="2.0" onAction="#BFSHandle" prefHeight="35.0" prefWidth="134.0" style="-fx-background-color: #5C6BC0;" text="BFS" textFill="#1b1a1a" GridPane.rowIndex="1">
                      <font>
                         <Font name="Quicksand-Regular" size="16.0" />
                      </font>
@@ -123,17 +124,41 @@
                            </image>
                         </ImageView>
                      </graphic>
-                     <padding>
-                        <Insets left="-120.0" />
-                     </padding>
                      <GridPane.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets left="20.0" />
                      </GridPane.margin>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                     <padding>
+                        <Insets right="30.0" />
+                     </padding>
+                  </JFXButton>
+                  <JFXButton fx:id="dijkstraButton" graphicTextGap="2.0" onAction="#DijkstraHandle" prefHeight="35.0" prefWidth="135.0" style="-fx-background-color: #5C6BC0;" text="Dijkstra" textFill="#1e1d1d" GridPane.rowIndex="3">
+                     <font>
+                        <Font name="Quicksand-Regular" size="16.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <graphic>
+                        <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/ButtonDot.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
                   </JFXButton>
                </children>
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
             </GridPane>
             <VBox layoutX="20.0" layoutY="395.0" prefHeight="102.0" prefWidth="162.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="18.0">
                <children>

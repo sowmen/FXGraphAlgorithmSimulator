@@ -32,7 +32,7 @@ import javafx.util.Duration;
 
 public class CanvasController implements Initializable {
 
-    @FXML private JFXButton canvasBackButton, clearButton, resetButton, bfsButton, dfsButton;
+    @FXML private JFXButton canvasBackButton, clearButton, resetButton, bfsButton, dfsButton, dijkstraButton;
     @FXML private JFXToggleButton addNodeButton, addEdgeButton;
     @FXML private Pane viewer;
     @FXML private Group canvasGroup;
@@ -41,15 +41,16 @@ public class CanvasController implements Initializable {
     @FXML private Pane border;
     @FXML private Arrow arrow;
 
-    int nNode = 0;
+    int nNode = 0, time = 500;
     NodeFX selectedNode = null;
     List<NodeFX> circles = new ArrayList<NodeFX>();
     boolean addNode = true, addEdge = false, calculate = false,
             calculated = false;
     List<Label> distances = new ArrayList<Label>();
-    private boolean weighted = false, unweighted = true,
-                    directed = true, undirected = false;
-
+    private boolean weighted = true, unweighted = false,
+                    directed = true, undirected = false,
+                    bfs = true, dfs =true, dijkstra =true;
+    Algorithm algo = new Algorithm();
 
     @FXML
     public void handle(MouseEvent ev) {
@@ -130,6 +131,8 @@ public class CanvasController implements Initializable {
                             FillTransition ft1 = new FillTransition(Duration.millis(300),selectedNode, Color.RED, Color.BLACK);
                             ft1.play();
                         }
+                        selectedNode = null;
+                        return;
                     }
                     
                     FillTransition ft = new FillTransition(Duration.millis(300),circle, Color.BLACK, Color.RED);
@@ -138,8 +141,35 @@ public class CanvasController implements Initializable {
                     selectedNode = circle;
                     
                     /**
-                     * ADD WHAT TO DO WHEN SELECTED ON ACTIVE ALGORITHM
+                     * WHAT TO DO WHEN SELECTED ON ACTIVE ALGORITHM
                      */
+                    
+                    if(calculate && ! calculated){
+                        if(bfs){
+                            algo.BFS(circle.node);
+                        } else if(dfs){
+                            algo.DFS(circle.node);
+                        } else if(dijkstra){
+                            algo.Dijkstra(circle.node);
+                        }
+                        
+                        calculated = true;
+                    } else if(calculate && calculated) {
+                        
+                        for(NodeFX n : circles){
+                            n.isSelected = false;
+                            FillTransition ft1 = new FillTransition(Duration.millis(300),n);
+                            ft1.setToValue(Color.BLACK);
+                            ft1.play();
+                        }
+                        List<Node> path = algo.getShortestPathTo(circle.node);
+                        for(Node n : path){
+                            FillTransition ft1 = new FillTransition(Duration.millis(300),n.circle);
+                            ft1.setToValue(Color.BLUE);
+                            ft1.play();
+                        }
+                    }
+                    
                 } else {
                     circle.isSelected = false;
                     FillTransition ft1 = new FillTransition(Duration.millis(300),circle, Color.RED, Color.BLACK);
@@ -167,7 +197,13 @@ public class CanvasController implements Initializable {
         addNodeButton.setSelected(true);
         addEdgeButton.setSelected(false);
         addEdgeButton.setDisable(true);
+        addNodeButton.setDisable(false);
         clearButton.setDisable(true);
+        algo = new Algorithm();
+        
+        bfsButton.setDisable(true);
+        dfsButton.setDisable(true);
+        dijkstraButton.setDisable(true);
     }
 
     @FXML
@@ -182,12 +218,15 @@ public class CanvasController implements Initializable {
             FillTransition ft1 = new FillTransition(Duration.millis(300), n);
             ft1.setToValue(Color.BLACK);
             ft1.play();
-        }
+        };
+        canvasGroup.getChildren().remove(sourceText);
         for (Label x : distances) {
             x.setText("Distance : INFINITY");
             canvasGroup.getChildren().remove(x);
         }
         distances = new ArrayList<Label>();
+        addNodeButton.setDisable(false);
+        AddNodeHandle(null);
     }
 
     @FXML
@@ -197,6 +236,13 @@ public class CanvasController implements Initializable {
         calculate = false;
         addNodeButton.setSelected(false);
         addEdgeButton.setSelected(true);
+        
+        if(unweighted){
+            bfsButton.setDisable(false);
+            dfsButton.setDisable(false);
+        }
+        if(weighted)
+            dijkstraButton.setDisable(false);
     }
 
     @FXML
@@ -207,8 +253,51 @@ public class CanvasController implements Initializable {
         addNodeButton.setSelected(true);
         addEdgeButton.setSelected(false);
         selectedNode = null;
+        
+        if(unweighted){
+            bfsButton.setDisable(false);
+            dfsButton.setDisable(false);
+        }
+        if(weighted)
+            dijkstraButton.setDisable(false);
     }
-
+    
+    @FXML public void BFSHandle(ActionEvent event) {
+        addNode = false;
+        addEdge = false;
+        addNodeButton.setSelected(false);
+        addEdgeButton.setSelected(false);;
+        addNodeButton.setDisable(true);
+        addEdgeButton.setDisable(true);
+        calculate = true;
+        clearButton.setDisable(false);
+        bfs = true;
+        dfs = false; dijkstra = false;
+    }
+    @FXML public void DFSHandle(ActionEvent event) {
+        addNode = false;
+        addEdge = false;
+        addNodeButton.setSelected(false);
+        addEdgeButton.setSelected(false);;
+        addNodeButton.setDisable(true);
+        addEdgeButton.setDisable(true);
+        calculate = true;
+        clearButton.setDisable(false);
+        dfs = true;
+        bfs = false; dijkstra = false;
+    }
+    @FXML public void DijkstraHandle(ActionEvent event) {
+        addNode = false;
+        addEdge = false;
+        addNodeButton.setSelected(false);
+        addEdgeButton.setSelected(false);;
+        addNodeButton.setDisable(true);
+        addEdgeButton.setDisable(true);
+        calculate = true;
+        clearButton.setDisable(false);
+        bfs = false;
+        dfs = false; dijkstra = true;
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         viewer.prefHeightProperty().bind(border.heightProperty());
@@ -216,6 +305,14 @@ public class CanvasController implements Initializable {
         AddNodeHandle(null);
         addEdgeButton.setDisable(true);
         clearButton.setDisable(true);
+
+        if(weighted){
+            bfsButton.setDisable(true); 
+            dfsButton.setDisable(true); 
+        }
+        if(unweighted){
+            dijkstraButton.setDisable(true);
+        }
     }
 
     public class NodeFX extends Circle {
@@ -244,12 +341,12 @@ public class CanvasController implements Initializable {
     /*
         Algorithm Declarations --------------------------------------------
     */
-    //<editor-fold defaultstate="collapsed" desc="Algorithm Classes">
     
-    public class Dijkstra {
+    public class Algorithm {
         public boolean init = false;
         
-        public void computePaths(Node source){
+        //<editor-fold defaultstate="collapsed" desc="Dijkstra">
+        public void Dijkstra(Node source){
             
             //<editor-fold defaultstate="collapsed" desc="Animation Control">
             for(NodeFX n:circles){
@@ -276,7 +373,7 @@ public class CanvasController implements Initializable {
                         Node v = e.target;
                         
                         //<editor-fold defaultstate="collapsed" desc="Animation Control">
-                        FillTransition ft = new FillTransition(Duration.millis(500), v.circle);
+                        FillTransition ft = new FillTransition(Duration.millis(time), v.circle);
                         if(v.circle.getFill()==Color.BLACK)
                             ft.setToValue(Color.FORESTGREEN);
                         st.getChildren().add(ft);
@@ -285,7 +382,7 @@ public class CanvasController implements Initializable {
                         if(u.minDistance + e.weight < v.minDistance)
                         {
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
-                            FillTransition ft1 = new FillTransition(Duration.millis(500), v.circle);
+                            FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.BLUEVIOLET);
                             ft1.setOnFinished(ev ->{
                                     v.circle.distance.setText("distance : "+v.minDistance);
@@ -305,11 +402,11 @@ public class CanvasController implements Initializable {
             //<editor-fold defaultstate="collapsed" desc="Animation Control">
             st.setOnFinished( ev ->{
                 for(NodeFX n: circles){
-                    FillTransition ft1 = new FillTransition(Duration.millis(500),n);
+                    FillTransition ft1 = new FillTransition(Duration.millis(time),n);
                     ft1.setToValue(Color.BLACK);
                     ft1.play();
                 }
-                FillTransition ft1 = new FillTransition(Duration.millis(500),source.circle);
+                FillTransition ft1 = new FillTransition(Duration.millis(time),source.circle);
                 ft1.setToValue(Color.RED);
                 ft1.play(); 
             });
@@ -317,7 +414,19 @@ public class CanvasController implements Initializable {
             st.play();
             //</editor-fold>
         }
+        //</editor-fold>
         
+        //<editor-fold defaultstate="collapsed" desc="BFS">
+        public void BFS(Node source) {
+            
+        }
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="DFS">
+        public void DFS(Node source) {
+            
+        }
+        //</editor-fold>
         public List<Node> getShortestPathTo(Node target) {
             List<Node> path = new ArrayList<Node>();
             for(Node i = target; i!=null; i = i.previous)
@@ -327,7 +436,4 @@ public class CanvasController implements Initializable {
         }
     }
     
-    
-    
-    //</editor-fold>
 }
