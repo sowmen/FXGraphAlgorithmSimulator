@@ -1,6 +1,8 @@
 package fxsimulator;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
+import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXToggleButton;
 import java.awt.Point;
 import java.io.IOException;
@@ -16,11 +18,14 @@ import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -34,10 +39,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
-public class CanvasController implements Initializable {
+public class CanvasController implements Initializable, ChangeListener {
 
     @FXML
-    private JFXButton canvasBackButton, clearButton, resetButton, bfsButton, dfsButton, dijkstraButton;
+    private JFXButton canvasBackButton, clearButton, resetButton, bfsButton, dfsButton, dijkstraButton, gear;
     @FXML
     private JFXToggleButton addNodeButton, addEdgeButton;
     @FXML
@@ -52,7 +57,11 @@ public class CanvasController implements Initializable {
     private Pane border;
     @FXML
     private Arrow arrow;
-
+    @FXML
+    private JFXNodesList nodeList;
+    @FXML
+    private JFXSlider slider;
+    
     int nNode = 0, time = 500;
     NodeFX selectedNode = null;
     List<NodeFX> circles = new ArrayList<NodeFX>();
@@ -64,6 +73,57 @@ public class CanvasController implements Initializable {
             bfs = true, dfs = true, dijkstra = true;
     Algorithm algo = new Algorithm();
 
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        ResetHandle(null);
+        viewer.prefHeightProperty().bind(border.heightProperty());
+        viewer.prefWidthProperty().bind(border.widthProperty());
+        AddNodeHandle(null);
+        addEdgeButton.setDisable(true);
+        clearButton.setDisable(true);
+
+        if (weighted) {
+            bfsButton.setDisable(true);
+            dfsButton.setDisable(true);
+        }
+        if (unweighted) {
+            dijkstraButton.setDisable(true);
+        }
+        
+        canvasBackButton.setOnAction(e -> {
+            ResetHandle(null);
+            Main.loader = new FXMLLoader(getClass().getResource("Panel1FXML.fxml")); 
+            try {
+                Main.root = Main.loader.load();
+            } catch (IOException ex) {
+                
+            }
+            
+            Main.scene = new Scene(Main.root);
+            Main.primaryStage.setScene(Main.scene);
+        });
+        
+        slider = new JFXSlider(10, 1000, 500);
+        slider.setPrefWidth(150);
+        slider.setPrefHeight(80);
+        slider.setSnapToTicks(true);
+        slider.setMinorTickCount(100);
+        slider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
+        slider.setBlendMode(BlendMode.MULTIPLY);
+        slider.setCursor(Cursor.CLOSED_HAND);
+        nodeList.addAnimatedNode(slider);
+        nodeList.setSpacing(50D);
+        nodeList.setRotate(270D);
+        
+        slider.valueProperty().addListener(this);
+        
+    }
+    @Override
+    public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        time = (int) slider.getValue();
+        System.out.println(time);
+    }
+     
     @FXML
     public void handle(MouseEvent ev) {
         if (addNode) {
@@ -75,7 +135,7 @@ public class CanvasController implements Initializable {
             if (!ev.getSource().equals(canvasGroup)) {
                 if (ev.getEventType() == MouseEvent.MOUSE_RELEASED && ev.getButton() == MouseButton.PRIMARY) {
                     nNode++;
-                    NodeFX circle = new NodeFX(ev.getX(), ev.getY(), 1, String.valueOf(nNode));
+                    NodeFX circle = new NodeFX(ev.getX(), ev.getY(), 1.2, String.valueOf(nNode));
                     canvasGroup.getChildren().add(circle);
 
                     circle.setOnMousePressed(mouseHandler);
@@ -137,9 +197,9 @@ public class CanvasController implements Initializable {
 
                             if (undirected) {
                                 selectedNode.node.adjacents.add(new Edge(circle.node, Integer.valueOf(weight.getText())));
+                                circle.node.adjacents.add(new Edge(selectedNode.node, Integer.valueOf(weight.getText())));
                             } else if (directed) {
                                 selectedNode.node.adjacents.add(new Edge(circle.node, Integer.valueOf(weight.getText())));
-                                circle.node.adjacents.add(new Edge(selectedNode.node, Integer.valueOf(weight.getText())));
                             }
                         }
                         if (addNode || (calculate && !calculated) || addEdge) {
@@ -324,36 +384,6 @@ public class CanvasController implements Initializable {
         bfs = false;
         dfs = false;
         dijkstra = true;
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        viewer.prefHeightProperty().bind(border.heightProperty());
-        viewer.prefWidthProperty().bind(border.widthProperty());
-        AddNodeHandle(null);
-        addEdgeButton.setDisable(true);
-        clearButton.setDisable(true);
-
-        if (weighted) {
-            bfsButton.setDisable(true);
-            dfsButton.setDisable(true);
-        }
-        if (unweighted) {
-            dijkstraButton.setDisable(true);
-        }
-        
-        canvasBackButton.setOnAction(e -> {
-            ResetHandle(null);
-            Main.loader = new FXMLLoader(getClass().getResource("Panel1FXML.fxml")); 
-            try {
-                Main.root = Main.loader.load();
-            } catch (IOException ex) {
-                
-            }
-            
-            Main.scene = new Scene(Main.root);
-            Main.primaryStage.setScene(Main.scene);
-        });
     }
 
     public class NodeFX extends Circle {

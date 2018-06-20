@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXNodesList?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -93,13 +95,6 @@
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
-                     <graphic>
-                        <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../res/ButtonDot.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
                      <GridPane.margin>
                         <Insets left="20.0" />
                      </GridPane.margin>
@@ -117,13 +112,6 @@
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
-                     <graphic>
-                        <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../res/ButtonDot.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
                      <GridPane.margin>
                         <Insets left="20.0" />
                      </GridPane.margin>
@@ -141,13 +129,6 @@
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
-                     <graphic>
-                        <ImageView fitHeight="11.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../res/ButtonDot.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -177,6 +158,26 @@
                   <Insets right="27.0" />
                </padding>
             </VBox>
+            <JFXNodesList fx:id="nodeList" layoutX="147.0" layoutY="1.0" prefHeight="0.0" prefWidth="0.0">
+               <children>
+                  <JFXButton fx:id="gear" contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="44.0" style="-fx-background-radius: 100;">
+                     <graphic>
+                        <ImageView fitHeight="28.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/fast_forward_black_48x48.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Change Animation Speed" textAlignment="CENTER">
+                           <font>
+                              <Font size="12.5" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                  </JFXButton>
+               </children>
+            </JFXNodesList>
          </children>
       </AnchorPane>
    </children>
