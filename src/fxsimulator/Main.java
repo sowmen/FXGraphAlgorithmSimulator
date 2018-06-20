@@ -18,13 +18,13 @@ import javafx.stage.Stage;
  * @author sowme
  */
 public class Main extends Application {
-    public static Stage primaryStage;
+    public Stage primaryStage;
         
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
         
-        FXMLLoader loader1 = new FXMLLoader(getClass().getResource("Canvas.fxml"));
+        FXMLLoader loader1 = new FXMLLoader(getClass().getResource("PanelFXML.fxml"));
         Parent root = loader1.load();
         
         Scene scene = new Scene(root);

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.ResourceBundle;
-import java.util.Stack;
 import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
@@ -51,14 +50,14 @@ public class CanvasController implements Initializable {
     @FXML
     private Arrow arrow;
 
-    int nNode = 0, time = 500;
+    int nNode = 0, time = 1500;
     NodeFX selectedNode = null;
     List<NodeFX> circles = new ArrayList<NodeFX>();
     boolean addNode = true, addEdge = false, calculate = false,
             calculated = false;
     List<Label> distances = new ArrayList<Label>();
-    private boolean weighted = false, unweighted = true,
-            directed = true, undirected = false,
+    private boolean weighted = true, unweighted = false,
+            directed = false, undirected = true,
             bfs = true, dfs = true, dijkstra = true;
     Algorithm algo = new Algorithm();
 
@@ -366,8 +365,7 @@ public class CanvasController implements Initializable {
      Algorithm Declarations --------------------------------------------
      */
     public class Algorithm {
-
-        public boolean init = false;
+        
         SequentialTransition st;
 
         //<editor-fold defaultstate="collapsed" desc="Dijkstra">
@@ -392,35 +390,38 @@ public class CanvasController implements Initializable {
             pq.add(source);
             while (!pq.isEmpty()) {
                 Node u = pq.poll();
+                System.out.println(u.name);
+                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                FillTransition ft = new FillTransition(Duration.millis(time), u.circle);
+                ft.setToValue(Color.CHOCOLATE);
+                st.getChildren().add(ft);
+                //</editor-fold>
                 for (Edge e : u.adjacents) {
                     if (e != null) {
                         Node v = e.target;
-
-                        //<editor-fold defaultstate="collapsed" desc="Animation Control">
-                        FillTransition ft = new FillTransition(Duration.millis(time), v.circle);
-                        if (v.circle.getFill() == Color.BLACK) {
-                            ft.setToValue(Color.FORESTGREEN);
-                        }
-                        st.getChildren().add(ft);
-                        //</editor-fold>
-
+                        System.out.println("HERE " + v.name);
                         if (u.minDistance + e.weight < v.minDistance) {
+                            pq.remove(v);
+                            v.minDistance = u.minDistance + e.weight;
+                            v.previous = u;
+                            pq.add(v);
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
-                            ft1.setToValue(Color.BLUEVIOLET);
+                            ft1.setToValue(Color.FORESTGREEN);
                             ft1.setOnFinished(ev -> {
                                 v.circle.distance.setText("distance : " + v.minDistance);
                             });
                             ft1.onFinishedProperty();
                             st.getChildren().add(ft1);
                             //</editor-fold>
-                            pq.remove(v);
-                            v.minDistance = u.minDistance + e.weight;
-                            v.previous = u;
-                            pq.add(v);
                         }
                     }
                 }
+                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                FillTransition ft2 = new FillTransition(Duration.millis(time), u.circle);
+                ft2.setToValue(Color.BLUEVIOLET);
+                st.getChildren().add(ft2);
+                //</editor-fold>
             }
 
             //<editor-fold defaultstate="collapsed" desc="Animation Control">
@@ -479,7 +480,7 @@ public class CanvasController implements Initializable {
                             v.visited = true;
                             q.push(v);
                             v.previous = u;
-                            
+
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.FORESTGREEN);
@@ -536,7 +537,7 @@ public class CanvasController implements Initializable {
             source.minDistance = 0;
             source.visited = true;
             DFSRecursion(source);
-            
+
             //<editor-fold defaultstate="collapsed" desc="Animation Control">
             st.setOnFinished(ev -> {
                 for (NodeFX n : circles) {

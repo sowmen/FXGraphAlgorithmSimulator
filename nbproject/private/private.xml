@@ -3,11 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator_1/pkg0/Panel1Controller.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator_1/pkg0/Main.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator_1/pkg0/Node.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator_1/pkg0/CanvasController.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator_1/pkg0/Canvas.fxml</file>
+            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator/Panel1Controller.java</file>
+            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator/Main.java</file>
+            <file>file:/F:/Java%20Workspace/FXSimulator_1.0/src/fxsimulator/CanvasController.java</file>
         </group>
     </open-files>
 </project-private>
