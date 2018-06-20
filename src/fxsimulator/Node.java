@@ -19,13 +19,16 @@ public class Node implements Comparable<Node>{
     public Node previous;
     public CanvasController.NodeFX circle;
     public double minDistance = Double.POSITIVE_INFINITY;
+    public boolean visited;
     
     public Node(String argName) {
         name = argName;
+        visited = false;
     }
     public Node(String argName, CanvasController.NodeFX c) {
         name = argName;
         circle = c;
+        visited = false;
     }
     
     @Override
