@@ -11,7 +11,7 @@ import javafx.scene.shape.Path;
  * @author kn
  */
 public class Arrow extends Path{
-    private static final double defaultArrowHeadSize = 5.0;
+    private static final double defaultArrowHeadSize = 7;
     private double startX, startY, endX, endY;
     public Arrow(double startX, double startY, double endX, double endY, double arrowHeadSize){
         super();
