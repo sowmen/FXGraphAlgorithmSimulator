@@ -344,7 +344,7 @@ public class CanvasController implements Initializable {
 
         Node node;
         Point point;
-        Label distance = new Label("Distance : INFINITY");
+        Label distance = new Label("Dist. : INFINITY");
         boolean isSelected = false;
 
         public NodeFX(double x, double y, double rad, String name) {
@@ -382,7 +382,7 @@ public class CanvasController implements Initializable {
             sourceText.setLayoutY(source.circle.point.y + 10);
             canvasGroup.getChildren().add(sourceText);
             SequentialTransition st = new SequentialTransition();
-            source.circle.distance.setText("distance : " + 0);
+            source.circle.distance.setText("Dist. : " + 0);
             //</editor-fold>
 
             source.minDistance = 0;
@@ -409,7 +409,7 @@ public class CanvasController implements Initializable {
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.FORESTGREEN);
                             ft1.setOnFinished(ev -> {
-                                v.circle.distance.setText("distance : " + v.minDistance);
+                                v.circle.distance.setText("Dist. : " + v.minDistance);
                             });
                             ft1.onFinishedProperty();
                             st.getChildren().add(ft1);
@@ -455,7 +455,7 @@ public class CanvasController implements Initializable {
             sourceText.setLayoutY(source.circle.point.y + 10);
             canvasGroup.getChildren().add(sourceText);
             st = new SequentialTransition();
-            source.circle.distance.setText("distance : " + 0);
+            source.circle.distance.setText("Dist. : " + 0);
             //</editor-fold>
 
             source.minDistance = 0;
@@ -485,7 +485,7 @@ public class CanvasController implements Initializable {
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.FORESTGREEN);
                             ft1.setOnFinished(ev -> {
-                                v.circle.distance.setText("distance : " + v.minDistance);
+                                v.circle.distance.setText("Dist. : " + v.minDistance);
                             });
                             ft1.onFinishedProperty();
                             st.getChildren().add(ft1);
@@ -531,7 +531,7 @@ public class CanvasController implements Initializable {
             sourceText.setLayoutY(source.circle.point.y + 10);
             canvasGroup.getChildren().add(sourceText);
             st = new SequentialTransition();
-            source.circle.distance.setText("distance : " + 0);
+            source.circle.distance.setText("Dist. : " + 0);
             //</editor-fold>
 
             source.minDistance = 0;
@@ -569,7 +569,7 @@ public class CanvasController implements Initializable {
                         v.minDistance = source.minDistance + 1;
                         v.visited = true;
                         v.previous = source;
-                        v.circle.distance.setText("distance : " + v.minDistance);
+                        v.circle.distance.setText("Dist. : " + v.minDistance);
                         DFSRecursion(v);
                         //<editor-fold defaultstate="collapsed" desc="Animation Control">
                         FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
