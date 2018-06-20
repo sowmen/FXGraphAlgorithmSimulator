@@ -3,6 +3,7 @@ package fxsimulator;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXToggleButton;
 import java.awt.Point;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,8 +19,10 @@ import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.BlendMode;
@@ -50,14 +53,14 @@ public class CanvasController implements Initializable {
     @FXML
     private Arrow arrow;
 
-    int nNode = 0, time = 1500;
+    int nNode = 0, time = 500;
     NodeFX selectedNode = null;
     List<NodeFX> circles = new ArrayList<NodeFX>();
     boolean addNode = true, addEdge = false, calculate = false,
             calculated = false;
     List<Label> distances = new ArrayList<Label>();
-    private boolean weighted = true, unweighted = false,
-            directed = false, undirected = true,
+    private boolean weighted = Panel1Controller.weighted, unweighted = Panel1Controller.unweighted,
+            directed = Panel1Controller.directed, undirected = Panel1Controller.undirected,
             bfs = true, dfs = true, dijkstra = true;
     Algorithm algo = new Algorithm();
 
@@ -338,6 +341,19 @@ public class CanvasController implements Initializable {
         if (unweighted) {
             dijkstraButton.setDisable(true);
         }
+        
+        canvasBackButton.setOnAction(e -> {
+            ResetHandle(null);
+            Main.loader = new FXMLLoader(getClass().getResource("Panel1FXML.fxml")); 
+            try {
+                Main.root = Main.loader.load();
+            } catch (IOException ex) {
+                
+            }
+            
+            Main.scene = new Scene(Main.root);
+            Main.primaryStage.setScene(Main.scene);
+        });
     }
 
     public class NodeFX extends Circle {

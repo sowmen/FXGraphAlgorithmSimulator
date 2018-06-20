@@ -18,24 +18,23 @@ import javafx.stage.Stage;
  * @author sowme
  */
 public class Main extends Application {
-    public Stage primaryStage;
-        
+    public static Stage primaryStage;
+    public static Scene scene;
+    public static Parent root;
+    public static FXMLLoader loader;
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
         
-        FXMLLoader loader1 = new FXMLLoader(getClass().getResource("PanelFXML.fxml"));
-        Parent root = loader1.load();
+        loader = new FXMLLoader(getClass().getResource("Panel1FXML.fxml"));
+        root = loader.load();
         
-        Scene scene = new Scene(root);
+        scene = new Scene(root);
         
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         launch(args);
     }

@@ -5,10 +5,15 @@
  */
 package fxsimulator;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.AnchorPane;
@@ -24,9 +29,15 @@ public class Panel1Controller implements Initializable {
     @FXML public Button panel1Next, panel2Back, drawGraph, textInput;    
     @FXML private RadioButton dButton, udButton, wButton, uwButton;
     @FXML private AnchorPane panel1, panel2;
-       
+    
+     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        dButton.setSelected(directed);
+        wButton.setSelected(weighted);
+        udButton.setSelected(undirected);
+        uwButton.setSelected(unweighted);
         
         panel2.setVisible(true);
         panel1.setVisible(false);
@@ -68,18 +79,16 @@ public class Panel1Controller implements Initializable {
             System.out.println("uwButton");
         });
         panel1Next.setOnAction(e -> {
-            System.out.println("HERE1");
-            panel2.setVisible(false);
-            panel1.setVisible(true);
-            panel2.toFront();
-            panel1.toBack();
+            Main.loader = new FXMLLoader(getClass().getResource("Canvas.fxml")); 
+            try {
+                Main.root = Main.loader.load();
+            } catch (IOException ex) {
+                
+            }
+            Main.scene = new Scene(Main.root);
+            Main.primaryStage.setScene(Main.scene);
         });
-        panel2Back.setOnAction(e -> {
-            System.out.println("YOLO");
-            panel1.setVisible(false);
-            panel2.setVisible(true);
-            panel1.toFront();
-        });
+        
     }    
     
 }
