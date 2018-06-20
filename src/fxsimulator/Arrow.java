@@ -12,9 +12,15 @@ import javafx.scene.shape.Path;
  */
 public class Arrow extends Path{
     private static final double defaultArrowHeadSize = 5.0;
-    
+    private double startX, startY, endX, endY;
     public Arrow(double startX, double startY, double endX, double endY, double arrowHeadSize){
         super();
+        
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        
         strokeProperty().bind(fillProperty());
         setFill(Color.BLACK);
         
