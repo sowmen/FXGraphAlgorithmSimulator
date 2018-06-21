@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
@@ -27,6 +29,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -91,16 +94,16 @@ public class CanvasController implements Initializable, ChangeListener {
         }
         
         canvasBackButton.setOnAction(e -> {
-            ResetHandle(null);
-            Main.loader = new FXMLLoader(getClass().getResource("Panel1FXML.fxml")); 
             try {
-                Main.root = Main.loader.load();
-            } catch (IOException ex) {
+                ResetHandle(null);
+                Parent root = FXMLLoader.load(getClass().getResource("Panel1FXML.fxml"));
                 
+                
+                Scene scene = new Scene(root);
+                Main.primaryStage.setScene(scene);
+            } catch (IOException ex) {
+                Logger.getLogger(CanvasController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            Main.scene = new Scene(Main.root);
-            Main.primaryStage.setScene(Main.scene);
         });
         
         slider = new JFXSlider(10, 1000, 500);

@@ -10,13 +10,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  *
@@ -26,9 +30,9 @@ public class Panel1Controller implements Initializable {
     
     public static boolean directed = false, undirected = false, weighted = false, unweighted = false;
     
-    @FXML public Button panel1Next, panel2Back, drawGraph, textInput;    
+    @FXML public Button panel1Next, panel2Back;    
     @FXML private RadioButton dButton, udButton, wButton, uwButton;
-    @FXML private AnchorPane panel1, panel2;
+    @FXML private AnchorPane panel1;
     
      
     @Override
@@ -39,8 +43,6 @@ public class Panel1Controller implements Initializable {
         udButton.setSelected(undirected);
         uwButton.setSelected(unweighted);
         
-        panel2.setVisible(true);
-        panel1.setVisible(false);
         
         // Thread for button control
         panel1Next.setDisable(true);
@@ -79,16 +81,30 @@ public class Panel1Controller implements Initializable {
             System.out.println("uwButton");
         });
         panel1Next.setOnAction(e -> {
-            Main.loader = new FXMLLoader(getClass().getResource("Canvas.fxml")); 
-            try {
-                Main.root = Main.loader.load();
-            } catch (IOException ex) {
-                
-            }
-            Main.scene = new Scene(Main.root);
-            Main.primaryStage.setScene(Main.scene);
+            FadeOut();
         });
         
-    }    
+    } 
+    void FadeOut(){
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(1000));
+        ft.setNode(panel1);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+        ft.setOnFinished(e -> {
+            loadNextScene();
+        });
+        ft.play();
+        System.out.println("Here");
+    }
+    void loadNextScene() {
+        try {
+            Parent secondView = FXMLLoader.load(getClass().getResource("Canvas.fxml"));
+            Scene newScene = new Scene(secondView);
+            Main.primaryStage.setScene(newScene);
+        } catch (IOException ex) {
+            Logger.getLogger(Panel1Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
 }

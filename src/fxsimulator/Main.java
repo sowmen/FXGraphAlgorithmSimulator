@@ -12,27 +12,24 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author sowme
  */
 public class Main extends Application {
+
     public static Stage primaryStage;
-    public static Scene scene;
-    public static Parent root;
-    public static FXMLLoader loader;
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
-        
-        loader = new FXMLLoader(getClass().getResource("Panel1FXML.fxml"));
-        root = loader.load();
-        
-        scene = new Scene(root);
+        Parent root = FXMLLoader.load(getClass().getResource("Panel1FXML.fxml"));        
+        Scene scene = new Scene(root);
         
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
 
     public static void main(String[] args) {
