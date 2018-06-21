@@ -100,7 +100,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 
                 
                 Scene scene = new Scene(root);
-                Main.primaryStage.setScene(scene);
+                FXSimulator.primaryStage.setScene(scene);
             } catch (IOException ex) {
                 Logger.getLogger(CanvasController.class.getName()).log(Level.SEVERE, null, ex);
             }

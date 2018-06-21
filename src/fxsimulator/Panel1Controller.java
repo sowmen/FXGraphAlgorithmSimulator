@@ -101,7 +101,7 @@ public class Panel1Controller implements Initializable {
         try {
             Parent secondView = FXMLLoader.load(getClass().getResource("Canvas.fxml"));
             Scene newScene = new Scene(secondView);
-            Main.primaryStage.setScene(newScene);
+            FXSimulator.primaryStage.setScene(newScene);
         } catch (IOException ex) {
             Logger.getLogger(Panel1Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
