@@ -7,6 +7,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -88,54 +89,24 @@
                         <Insets bottom="10.0" />
                      </GridPane.margin>
                   </Label>
-                  <JFXButton fx:id="dfsButton" graphicTextGap="2.0" onAction="#DFSHandle" prefHeight="35.0" prefWidth="134.0" style="-fx-background-color: #5C6BC0;" text="DFS" textFill="#1e1d1d" GridPane.rowIndex="2">
+                  <JFXToggleButton fx:id="bfsButton" alignment="BASELINE_CENTER" onAction="#BFSHandle" prefHeight="59.0" prefWidth="132.0" size="9.0" text="BFS" toggleColor="#ff5722" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="1">
                      <font>
-                        <Font name="Quicksand-Regular" size="16.0" />
+                        <Font name="Roboto Light" size="20.0" />
                      </font>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <padding>
-                        <Insets right="30.0" />
-                     </padding>
-                  </JFXButton>
-                  <JFXButton fx:id="bfsButton" graphicTextGap="2.0" onAction="#BFSHandle" prefHeight="35.0" prefWidth="134.0" style="-fx-background-color: #5C6BC0;" text="BFS" textFill="#1b1a1a" GridPane.rowIndex="1">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="algoToggleGroup" />
+                     </toggleGroup>
+                  </JFXToggleButton>
+                  <JFXToggleButton fx:id="dfsButton" alignment="BASELINE_CENTER" layoutX="15.0" layoutY="46.0" onAction="#DFSHandle" prefHeight="59.0" prefWidth="133.0" size="9.0" text="DFS" toggleColor="#ff5722" toggleGroup="$algoToggleGroup" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="2">
                      <font>
-                        <Font name="Quicksand-Regular" size="16.0" />
+                        <Font name="Roboto Light" size="20.0" />
                      </font>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <padding>
-                        <Insets right="30.0" />
-                     </padding>
-                  </JFXButton>
-                  <JFXButton fx:id="dijkstraButton" graphicTextGap="2.0" onAction="#DijkstraHandle" prefHeight="35.0" prefWidth="135.0" style="-fx-background-color: #5C6BC0;" text="Dijkstra" textFill="#1e1d1d" GridPane.rowIndex="3">
+                  </JFXToggleButton>
+                  <JFXToggleButton fx:id="dijkstraButton" alignment="BASELINE_CENTER" layoutX="15.0" layoutY="91.0" onAction="#DijkstraHandle" prefHeight="59.0" prefWidth="161.0" size="9.0" text="Dijkstra" toggleColor="#ff5722" toggleGroup="$algoToggleGroup" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="3">
                      <font>
-                        <Font name="Quicksand-Regular" size="16.0" />
+                        <Font name="Roboto Light" size="20.0" />
                      </font>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                  </JFXButton>
+                  </JFXToggleButton>
                </children>
                <padding>
                   <Insets left="5.0" right="5.0" />

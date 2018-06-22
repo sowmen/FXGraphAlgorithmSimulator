@@ -33,6 +33,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -45,9 +46,11 @@ import javafx.util.Duration;
 public class CanvasController implements Initializable, ChangeListener {
 
     @FXML
-    private JFXButton canvasBackButton, clearButton, resetButton, bfsButton, dfsButton, dijkstraButton, gear;
+    private JFXButton canvasBackButton, clearButton, resetButton, gear;
     @FXML
-    private JFXToggleButton addNodeButton, addEdgeButton;
+    private JFXToggleButton addNodeButton, addEdgeButton,bfsButton, dfsButton, dijkstraButton;
+    @FXML
+    private ToggleGroup algoToggleGroup;
     @FXML
     private Pane viewer;
     @FXML
@@ -64,7 +67,7 @@ public class CanvasController implements Initializable, ChangeListener {
     private JFXNodesList nodeList;
     @FXML
     private JFXSlider slider;
-    
+
     int nNode = 0, time = 500;
     NodeFX selectedNode = null;
     List<NodeFX> circles = new ArrayList<NodeFX>();
@@ -81,9 +84,11 @@ public class CanvasController implements Initializable, ChangeListener {
         ResetHandle(null);
         viewer.prefHeightProperty().bind(border.heightProperty());
         viewer.prefWidthProperty().bind(border.widthProperty());
-        AddNodeHandle(null);
+//        AddNodeHandle(null);
         addEdgeButton.setDisable(true);
         clearButton.setDisable(true);
+        
+        
 
         if (weighted) {
             bfsButton.setDisable(true);
@@ -92,20 +97,19 @@ public class CanvasController implements Initializable, ChangeListener {
         if (unweighted) {
             dijkstraButton.setDisable(true);
         }
-        
+
         canvasBackButton.setOnAction(e -> {
             try {
                 ResetHandle(null);
                 Parent root = FXMLLoader.load(getClass().getResource("Panel1FXML.fxml"));
-                
-                
+
                 Scene scene = new Scene(root);
                 FXSimulator.primaryStage.setScene(scene);
             } catch (IOException ex) {
                 Logger.getLogger(CanvasController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         slider = new JFXSlider(10, 1000, 500);
         slider.setPrefWidth(150);
         slider.setPrefHeight(80);
@@ -117,16 +121,17 @@ public class CanvasController implements Initializable, ChangeListener {
         nodeList.addAnimatedNode(slider);
         nodeList.setSpacing(50D);
         nodeList.setRotate(270D);
-        
+
         slider.valueProperty().addListener(this);
-        
+
     }
+
     @Override
     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
         time = (int) slider.getValue();
         System.out.println(time);
     }
-     
+
     @FXML
     public void handle(MouseEvent ev) {
         if (addNode) {
@@ -262,6 +267,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
     @FXML
     public void ResetHandle(ActionEvent event) {
+        ClearHandle(null);
         nNode = 0;
         canvasGroup.getChildren().clear();
         canvasGroup.getChildren().addAll(viewer);
@@ -278,7 +284,8 @@ public class CanvasController implements Initializable, ChangeListener {
         addNodeButton.setDisable(false);
         clearButton.setDisable(true);
         algo = new Algorithm();
-
+        
+        
         bfsButton.setDisable(true);
         dfsButton.setDisable(true);
         dijkstraButton.setDisable(true);
@@ -319,10 +326,13 @@ public class CanvasController implements Initializable, ChangeListener {
 
         if (unweighted) {
             bfsButton.setDisable(false);
+            bfsButton.setSelected(false);
             dfsButton.setDisable(false);
+            dfsButton.setSelected(false);
         }
         if (weighted) {
             dijkstraButton.setDisable(false);
+            dijkstraButton.setSelected(false);
         }
     }
 
@@ -337,10 +347,13 @@ public class CanvasController implements Initializable, ChangeListener {
 
         if (unweighted) {
             bfsButton.setDisable(false);
+            bfsButton.setSelected(false);
             dfsButton.setDisable(false);
+            dfsButton.setSelected(false);
         }
         if (weighted) {
             dijkstraButton.setDisable(false);
+            dijkstraButton.setSelected(false);
         }
     }
 
@@ -414,7 +427,7 @@ public class CanvasController implements Initializable, ChangeListener {
      Algorithm Declarations --------------------------------------------
      */
     public class Algorithm {
-        
+
         SequentialTransition st;
 
         //<editor-fold defaultstate="collapsed" desc="Dijkstra">
