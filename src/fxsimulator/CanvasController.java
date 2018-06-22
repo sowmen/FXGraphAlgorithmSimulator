@@ -84,7 +84,7 @@ public class CanvasController implements Initializable, ChangeListener {
         ResetHandle(null);
         viewer.prefHeightProperty().bind(border.heightProperty());
         viewer.prefWidthProperty().bind(border.widthProperty());
-//        AddNodeHandle(null);
+        AddNodeHandle(null);
         addEdgeButton.setDisable(true);
         clearButton.setDisable(true);
         
