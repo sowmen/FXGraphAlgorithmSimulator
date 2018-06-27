@@ -48,7 +48,7 @@ public class CanvasController implements Initializable, ChangeListener {
     @FXML
     private JFXButton canvasBackButton, clearButton, resetButton, gear;
     @FXML
-    private JFXToggleButton addNodeButton, addEdgeButton,bfsButton, dfsButton, dijkstraButton;
+    private JFXToggleButton addNodeButton, addEdgeButton,bfsButton, dfsButton, dijkstraButton, articulationPointButton;
     @FXML
     private ToggleGroup algoToggleGroup;
     @FXML
@@ -73,10 +73,10 @@ public class CanvasController implements Initializable, ChangeListener {
     List<NodeFX> circles = new ArrayList<NodeFX>();
     boolean addNode = true, addEdge = false, calculate = false,
             calculated = false;
-    List<Label> distances = new ArrayList<Label>();
+    List<Label> distances = new ArrayList<Label>(), visitTime = new ArrayList<Label>(), lowTime = new ArrayList<Label>();
     private boolean weighted = Panel1Controller.weighted, unweighted = Panel1Controller.unweighted,
             directed = Panel1Controller.directed, undirected = Panel1Controller.undirected,
-            bfs = true, dfs = true, dijkstra = true;
+            bfs = true, dfs = true, dijkstra = true, articulationPoint = true;
     Algorithm algo = new Algorithm();
 
     @Override
@@ -84,7 +84,7 @@ public class CanvasController implements Initializable, ChangeListener {
         ResetHandle(null);
         viewer.prefHeightProperty().bind(border.heightProperty());
         viewer.prefWidthProperty().bind(border.widthProperty());
-        AddNodeHandle(null);
+//        AddNodeHandle(null);
         addEdgeButton.setDisable(true);
         clearButton.setDisable(true);
         
@@ -126,12 +126,27 @@ public class CanvasController implements Initializable, ChangeListener {
 
     }
 
+    //Listens change in the slider
     @Override
     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-        time = (int) slider.getValue();
+        int temp = (int) slider.getValue();
+        
+        if(temp > 500){
+            int diff = temp - 500;
+            temp = 500;
+            temp -= diff;
+            temp += 10;
+        } else if(temp < 500){
+            int diff = 500 - temp;
+            temp = 500;
+            temp += diff;
+            temp -= 10;
+        }
+        time = temp;    
         System.out.println(time);
     }
 
+    //Adds new node when clicked on empty canvas
     @FXML
     public void handle(MouseEvent ev) {
         if (addNode) {
@@ -162,6 +177,7 @@ public class CanvasController implements Initializable, ChangeListener {
         }
     }
 
+    //Selects a node when clicked on a node
     EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 
         @Override
@@ -229,11 +245,13 @@ public class CanvasController implements Initializable, ChangeListener {
                      */
                     if (calculate && !calculated) {
                         if (bfs) {
-                            algo.BFS(circle.node);
+                            algo.newBFS(circle.node);
                         } else if (dfs) {
-                            algo.DFS(circle.node);
+                            algo.newDFS(circle.node);
                         } else if (dijkstra) {
-                            algo.Dijkstra(circle.node);
+                            algo.newDijkstra(circle.node);
+                        } else if(articulationPoint) {
+                            algo.newArticulationPoint(circle.node);
                         }
 
                         calculated = true;
@@ -274,6 +292,8 @@ public class CanvasController implements Initializable, ChangeListener {
         selectedNode = null;
         circles = new ArrayList<NodeFX>();
         distances = new ArrayList<Label>();
+        visitTime = new ArrayList<Label>();
+        lowTime = new ArrayList<Label>();
         addNode = true;
         addEdge = false;
         calculate = false;
@@ -289,6 +309,7 @@ public class CanvasController implements Initializable, ChangeListener {
         bfsButton.setDisable(true);
         dfsButton.setDisable(true);
         dijkstraButton.setDisable(true);
+        articulationPointButton.setDisable(true);
     }
 
     @FXML
@@ -305,12 +326,23 @@ public class CanvasController implements Initializable, ChangeListener {
             ft1.setToValue(Color.BLACK);
             ft1.play();
         };
+        
         canvasGroup.getChildren().remove(sourceText);
         for (Label x : distances) {
             x.setText("Distance : INFINITY");
             canvasGroup.getChildren().remove(x);
         }
+        for (Label x : visitTime) {
+            x.setText("Visit : 0");
+            canvasGroup.getChildren().remove(x);
+        }
+        for (Label x : lowTime) {
+            x.setText("Low Value : NULL");
+            canvasGroup.getChildren().remove(x);
+        }
         distances = new ArrayList<Label>();
+        visitTime = new ArrayList<Label>();
+        lowTime = new ArrayList<Label>();;
         addNodeButton.setDisable(false);
         addEdgeButton.setDisable(false);
         AddNodeHandle(null);
@@ -329,6 +361,8 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
+            articulationPointButton.setDisable(false);
+            articulationPointButton.setSelected(false);
         }
         if (weighted) {
             dijkstraButton.setDisable(false);
@@ -350,6 +384,8 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
+            articulationPointButton.setDisable(false);
+            articulationPointButton.setSelected(false);
         }
         if (weighted) {
             dijkstraButton.setDisable(false);
@@ -386,9 +422,9 @@ public class CanvasController implements Initializable, ChangeListener {
         bfs = false;
         dijkstra = false;
     }
-
+    
     @FXML
-    public void DijkstraHandle(ActionEvent event) {
+    public void ArticulationPointHandle(ActionEvent event){
         addNode = false;
         addEdge = false;
         addNodeButton.setSelected(false);
@@ -397,9 +433,25 @@ public class CanvasController implements Initializable, ChangeListener {
         addEdgeButton.setDisable(true);
         calculate = true;
         clearButton.setDisable(false);
+        dfs = false;
+        bfs = false;
+        dijkstra = false;
+        articulationPoint = true;
+    }
+    @FXML
+    public void DijkstraHandle(ActionEvent event) {
+        addNode = false;
+        addEdge = false;
+        addNodeButton.setSelected(false);
+        addEdgeButton.setSelected(false);
+        addNodeButton.setDisable(true);
+        addEdgeButton.setDisable(true);
+        calculate = true;
+        clearButton.setDisable(false);
         bfs = false;
         dfs = false;
         dijkstra = true;
+        articulationPoint = false;
     }
 
     public class NodeFX extends Circle {
@@ -407,6 +459,8 @@ public class CanvasController implements Initializable, ChangeListener {
         Node node;
         Point point;
         Label distance = new Label("Dist. : INFINITY");
+        Label visitTime = new Label("Visit : 0");
+        Label lowTime = new Label("Low : 0");
         boolean isSelected = false;
 
         public NodeFX(double x, double y, double rad, String name) {
@@ -424,14 +478,18 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /*
-     Algorithm Declarations --------------------------------------------
+     Algorithm Declarations -----------------------------------------------
      */
     public class Algorithm {
 
         SequentialTransition st;
 
         //<editor-fold defaultstate="collapsed" desc="Dijkstra">
-        public void Dijkstra(Node source) {
+        public void newDijkstra(Node source){
+            new Dijkstra(source);
+        }
+        class Dijkstra{
+            Dijkstra(Node source) {
 
             //<editor-fold defaultstate="collapsed" desc="Animation Control">
             for (NodeFX n : circles) {
@@ -501,122 +559,132 @@ public class CanvasController implements Initializable, ChangeListener {
             st.play();
             //</editor-fold>
         }
+        }
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="BFS">
-        public void BFS(Node source) {
+        public void newBFS(Node source){
+            new BFS(source);
+        }
+        class BFS{
+            BFS(Node source) {
 
-            //<editor-fold defaultstate="collapsed" desc="Animation Initialize">
-            for (NodeFX n : circles) {
-                distances.add(n.distance);
-                n.distance.setLayoutX(n.point.x + 20);
-                n.distance.setLayoutY(n.point.y);
-                canvasGroup.getChildren().add(n.distance);
-            }
-            sourceText.setLayoutX(source.circle.point.x + 20);
-            sourceText.setLayoutY(source.circle.point.y + 10);
-            canvasGroup.getChildren().add(sourceText);
-            st = new SequentialTransition();
-            source.circle.distance.setText("Dist. : " + 0);
-            //</editor-fold>
-
-            source.minDistance = 0;
-            source.visited = true;
-            LinkedList<Node> q = new LinkedList<Node>();
-            q.push(source);
-            while (!q.isEmpty()) {
-                Node u = q.removeLast();
-                //<editor-fold defaultstate="collapsed" desc="Animation Control">
-                FillTransition ft = new FillTransition(Duration.millis(time), u.circle);
-                if (u.circle.getFill() == Color.BLACK) {
-                    ft.setToValue(Color.CHOCOLATE);
+                //<editor-fold defaultstate="collapsed" desc="Animation Initialize">
+                for (NodeFX n : circles) {
+                    distances.add(n.distance);
+                    n.distance.setLayoutX(n.point.x + 20);
+                    n.distance.setLayoutY(n.point.y);
+                    canvasGroup.getChildren().add(n.distance);
                 }
-                st.getChildren().add(ft);
+                sourceText.setLayoutX(source.circle.point.x + 20);
+                sourceText.setLayoutY(source.circle.point.y + 10);
+                canvasGroup.getChildren().add(sourceText);
+                st = new SequentialTransition();
+                source.circle.distance.setText("Dist. : " + 0);
                 //</editor-fold>
-                System.out.println(u.name);
-                for (Edge e : u.adjacents) {
-                    if (e != null) {
-                        Node v = e.target;
-                        if (!v.visited) {
-                            v.minDistance = u.minDistance + 1;
-                            v.visited = true;
-                            q.push(v);
-                            v.previous = u;
 
-                            //<editor-fold defaultstate="collapsed" desc="Animation Control">
-                            FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
-                            ft1.setToValue(Color.FORESTGREEN);
-                            ft1.setOnFinished(ev -> {
-                                v.circle.distance.setText("Dist. : " + v.minDistance);
-                            });
-                            ft1.onFinishedProperty();
-                            st.getChildren().add(ft1);
-                            //</editor-fold>
+                source.minDistance = 0;
+                source.visited = true;
+                LinkedList<Node> q = new LinkedList<Node>();
+                q.push(source);
+                while (!q.isEmpty()) {
+                    Node u = q.removeLast();
+                    //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                    FillTransition ft = new FillTransition(Duration.millis(time), u.circle);
+                    if (u.circle.getFill() == Color.BLACK) {
+                        ft.setToValue(Color.CHOCOLATE);
+                    }
+                    st.getChildren().add(ft);
+                    //</editor-fold>
+                    System.out.println(u.name);
+                    for (Edge e : u.adjacents) {
+                        if (e != null) {
+                            Node v = e.target;
+                            if (!v.visited) {
+                                v.minDistance = u.minDistance + 1;
+                                v.visited = true;
+                                q.push(v);
+                                v.previous = u;
+
+                                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                                FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
+                                ft1.setToValue(Color.FORESTGREEN);
+                                ft1.setOnFinished(ev -> {
+                                    v.circle.distance.setText("Dist. : " + v.minDistance);
+                                });
+                                ft1.onFinishedProperty();
+                                st.getChildren().add(ft1);
+                                //</editor-fold>
+                            }
                         }
                     }
+                    //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                    FillTransition ft2 = new FillTransition(Duration.millis(time), u.circle);
+                    ft2.setToValue(Color.BLUEVIOLET);
+                    st.getChildren().add(ft2);
+                    //</editor-fold>
                 }
+
                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
-                FillTransition ft2 = new FillTransition(Duration.millis(time), u.circle);
-                ft2.setToValue(Color.BLUEVIOLET);
-                st.getChildren().add(ft2);
+                st.setOnFinished(ev -> {
+                    for (NodeFX n : circles) {
+                        FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                        ft1.setToValue(Color.BLACK);
+                        ft1.play();
+                    }
+                    FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
+                    ft1.setToValue(Color.RED);
+                    ft1.play();
+                });
+                st.onFinishedProperty();
+                st.play();
                 //</editor-fold>
             }
-
-            //<editor-fold defaultstate="collapsed" desc="Animation Control">
-            st.setOnFinished(ev -> {
-                for (NodeFX n : circles) {
-                    FillTransition ft1 = new FillTransition(Duration.millis(time), n);
-                    ft1.setToValue(Color.BLACK);
-                    ft1.play();
-                }
-                FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
-                ft1.setToValue(Color.RED);
-                ft1.play();
-            });
-            st.onFinishedProperty();
-            st.play();
-            //</editor-fold>
         }
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="DFS">
-        public void DFS(Node source) {
-
-            //<editor-fold defaultstate="collapsed" desc="Animation Setup Labels">
-            for (NodeFX n : circles) {
-                distances.add(n.distance);
-                n.distance.setLayoutX(n.point.x + 20);
-                n.distance.setLayoutY(n.point.y);
-                canvasGroup.getChildren().add(n.distance);
-            }
-            sourceText.setLayoutX(source.circle.point.x + 20);
-            sourceText.setLayoutY(source.circle.point.y + 10);
-            canvasGroup.getChildren().add(sourceText);
-            st = new SequentialTransition();
-            source.circle.distance.setText("Dist. : " + 0);
-            //</editor-fold>
-
-            source.minDistance = 0;
-            source.visited = true;
-            DFSRecursion(source);
-
-            //<editor-fold defaultstate="collapsed" desc="Animation Control">
-            st.setOnFinished(ev -> {
-                for (NodeFX n : circles) {
-                    FillTransition ft1 = new FillTransition(Duration.millis(time), n);
-                    ft1.setToValue(Color.BLACK);
-                    ft1.play();
-                }
-                FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
-                ft1.setToValue(Color.RED);
-                ft1.play();
-            });
-            st.onFinishedProperty();
-            st.play();
-            //</editor-fold>
+        public void newDFS(Node source){
+            new DFS(source);
         }
+        class DFS{            
+            DFS(Node source) {
 
-        public void DFSRecursion(Node source) {
+                //<editor-fold defaultstate="collapsed" desc="Animation Setup Distances">
+                for (NodeFX n : circles) {
+                    distances.add(n.distance);
+                    n.distance.setLayoutX(n.point.x + 20);
+                    n.distance.setLayoutY(n.point.y);
+                    canvasGroup.getChildren().add(n.distance);
+                }
+                sourceText.setLayoutX(source.circle.point.x + 20);
+                sourceText.setLayoutY(source.circle.point.y + 10);
+                canvasGroup.getChildren().add(sourceText);
+                st = new SequentialTransition();
+                source.circle.distance.setText("Dist. : " + 0);
+                //</editor-fold>
+
+                source.minDistance = 0;
+                source.visited = true;
+                DFSRecursion(source);
+
+                //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
+                st.setOnFinished(ev -> {
+                    for (NodeFX n : circles) {
+                        FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                        ft1.setToValue(Color.BLACK);
+                        ft1.play();
+                    }
+                    FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
+                    ft1.setToValue(Color.RED);
+                    ft1.play();
+                });
+                st.onFinishedProperty();
+                st.play();
+                //</editor-fold>
+            }
+
+            public void DFSRecursion(Node source) {
             //<editor-fold defaultstate="collapsed" desc="Animation Control">
             FillTransition ft = new FillTransition(Duration.millis(time), source.circle);
             if (source.circle.getFill() == Color.BLACK) {
@@ -631,20 +699,137 @@ public class CanvasController implements Initializable, ChangeListener {
                         v.minDistance = source.minDistance + 1;
                         v.visited = true;
                         v.previous = source;
-                        v.circle.distance.setText("Dist. : " + v.minDistance);
+//                        v.circle.distance.setText("Dist. : " + v.minDistance);
                         DFSRecursion(v);
                         //<editor-fold defaultstate="collapsed" desc="Animation Control">
                         FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                         ft1.setToValue(Color.BLUEVIOLET);
                         ft1.onFinishedProperty();
+                        ft1.setOnFinished(ev -> {
+                            v.circle.distance.setText("Dist. : " + v.minDistance);
+                        });
                         st.getChildren().add(ft1);
                         //</editor-fold>
                     }
                 }
             }
         }
-
+        }
         //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Articulation Point">
+        public void newArticulationPoint(Node s){
+            new ArticulationPoint(s);
+        }
+        class ArticulationPoint{
+            
+            int timeCnt = 0;            
+            ArticulationPoint(Node source){
+                
+                //<editor-fold defaultstate="collapsed" desc="Animation Setup Distances">
+                for (NodeFX n : circles) {
+                    visitTime.add(n.visitTime);
+                    n.visitTime.setLayoutX(n.point.x + 20);
+                    n.visitTime.setLayoutY(n.point.y);
+                    canvasGroup.getChildren().add(n.visitTime);
+
+                    lowTime.add(n.lowTime);
+                    n.lowTime.setLayoutX(n.point.x + 20);
+                    n.lowTime.setLayoutY(n.point.y + 13);
+                    canvasGroup.getChildren().add(n.lowTime);
+                    
+                    n.node.isArticulationPoint = false;
+                }
+                sourceText.setLayoutX(source.circle.point.x + 20);
+                sourceText.setLayoutY(source.circle.point.y + 25);
+                canvasGroup.getChildren().add(sourceText);
+                st = new SequentialTransition();
+                source.circle.lowTime.setText("Low : " + source.name);
+                source.circle.visitTime.setText("Visit : " + source.visitTime);
+                //</editor-fold>
+            
+                timeCnt = 0;
+                RecAP(source);
+
+                for(NodeFX n : circles)
+                    if(n.node.isArticulationPoint)
+                     System.out.println(n.node.name);
+
+                //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
+                st.setOnFinished(ev -> {
+                    for (NodeFX n : circles) {
+                        FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                        ft1.setToValue(Color.BLACK);
+                        ft1.play();
+                    }
+                    for(NodeFX n : circles){
+                        if(n.node.isArticulationPoint){
+                            FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                            ft1.setToValue(Color.CHARTREUSE);
+                            ft1.play();
+                        }
+                    }
+                });
+                st.onFinishedProperty();
+                st.play();
+                //</editor-fold>
+            }
+            
+            void RecAP(Node s){
+                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                FillTransition ft = new FillTransition(Duration.millis(time), s.circle);
+                if (s.circle.getFill() == Color.BLACK) {
+                    ft.setToValue(Color.FORESTGREEN);
+                }
+                ft.setOnFinished(ev -> {
+                    s.circle.lowTime.setText("Low : " + s.lowTime);
+                    s.circle.visitTime.setText("Visit : " + s.visitTime);
+                });
+                st.getChildren().add(ft);
+                //</editor-fold>
+                s.visited = true;
+                s.visitTime = timeCnt;
+                s.lowTime = timeCnt;
+                
+                timeCnt++;
+                int childCount = 0;
+                
+                for(Edge e : s.adjacents){
+                    if(e != null){
+                        Node v = e.target;
+                        if(s.previous == v){
+                            continue;
+                        }
+                        if(!v.visited){
+                            v.previous = s;
+                            childCount++;
+                            RecAP(v);
+                            
+                            s.lowTime = Math.min(s.lowTime, v.lowTime);
+                            if(s.visitTime <= v.lowTime && s.previous != null)
+                                s.isArticulationPoint = true;
+                            
+                            //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                            FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
+                            ft1.setToValue(Color.BLUEVIOLET);
+                            ft1.setOnFinished(ev -> {
+                                s.circle.lowTime.setText("Low : " + s.lowTime);
+                                s.circle.visitTime.setText("Visit : " + s.visitTime);
+                            });
+                            ft1.onFinishedProperty();
+                            st.getChildren().add(ft1);
+                            //</editor-fold>
+                        }else{
+                            s.lowTime = Math.min(s.lowTime, v.visitTime);
+                        }
+                    }
+                }
+                if(childCount > 1 && s.previous == null)
+                    s.isArticulationPoint = true;
+            }
+        }
+        //</editor-fold>
+        
         public List<Node> getShortestPathTo(Node target) {
             List<Node> path = new ArrayList<Node>();
             for (Node i = target; i != null; i = i.previous) {

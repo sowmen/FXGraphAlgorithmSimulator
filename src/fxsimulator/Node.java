@@ -19,7 +19,8 @@ public class Node implements Comparable<Node>{
     public Node previous;
     public CanvasController.NodeFX circle;
     public double minDistance = Double.POSITIVE_INFINITY;
-    public boolean visited;
+    public boolean visited, isArticulationPoint;
+    public int visitTime = 0, lowTime = 0;
     
     public Node(String argName) {
         name = argName;

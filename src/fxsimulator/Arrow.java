@@ -6,10 +6,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-/**
- *
- * @author kn
- */
 public class Arrow extends Path{
     private static final double defaultArrowHeadSize = 7;
     private double startX, startY, endX, endY;
