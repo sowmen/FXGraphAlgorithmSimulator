@@ -16,6 +16,7 @@ public class Node implements Comparable<Node>{
     
     public String name;
     public List <Edge> adjacents = new ArrayList<Edge>();
+    public List <Edge> revAdjacents = new ArrayList<Edge>();
     public Node previous;
     public CanvasController.NodeFX circle;
     public double minDistance = Double.POSITIVE_INFINITY;
