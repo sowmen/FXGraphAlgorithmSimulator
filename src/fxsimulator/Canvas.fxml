@@ -161,6 +161,22 @@
                   </JFXButton>
                </children>
             </JFXNodesList>
+            <JFXButton fx:id="playPauseButton" contentDisplay="GRAPHIC_ONLY" layoutX="111.0" layoutY="1.0" onAction="#PlayPauseHandle" prefHeight="35.0" prefWidth="44.0" style="-fx-background-radius: 100;">
+               <graphic>
+                  <ImageView fx:id="playPauseImage" fitHeight="28.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../res/pause_black_48x48.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Pause" textAlignment="CENTER">
+                     <font>
+                        <Font size="12.5" />
+                     </font>
+                  </Tooltip>
+               </tooltip>
+            </JFXButton>
          </children>
       </AnchorPane>
    </children>

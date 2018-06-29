@@ -5,18 +5,20 @@
  */
 package fxsimulator;
 
+import javafx.scene.shape.Shape;
+
 /**
  *
  * @author sowme
  */
 public class Edge {
-    public final Node target;
+    public final Node source, target;
     public final double weight;
-    
-    public Edge(Node argTarget) {
-        target = argTarget; weight = 0;
+    public Shape line;
+    public Edge(Node argSource, Node argTarget) {
+        source = argSource; target = argTarget; weight = 0;
     }
-    public Edge(Node argTarget, double argWeight) {
-        target = argTarget; weight = argWeight;                
+    public Edge(Node argSource, Node argTarget, double argWeight, Shape argline) {
+        source = argSource; target = argTarget; weight = argWeight; line = argline;           
     }
 }
