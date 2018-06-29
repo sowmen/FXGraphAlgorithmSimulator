@@ -313,7 +313,7 @@ public class CanvasController implements Initializable, ChangeListener {
             playing = false;
             return;
         }
-        if(paused){
+        else if(paused){
             Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
             playPauseImage.setImage(image);
             st.play();
@@ -343,7 +343,9 @@ public class CanvasController implements Initializable, ChangeListener {
         addNodeButton.setDisable(false);
         clearButton.setDisable(true);
         algo = new Algorithm();
-
+        Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
+        playPauseImage.setImage(image);
+        
         bfsButton.setDisable(true);
         dfsButton.setDisable(true);
         dijkstraButton.setDisable(true);
@@ -366,7 +368,17 @@ public class CanvasController implements Initializable, ChangeListener {
             ft1.setToValue(Color.BLACK);
             ft1.play();
         };
-
+        for(Shape x : edges){
+            if(undirected){
+                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), x);
+                ftEdge.setToValue(Color.BLACK);
+                ftEdge.play();
+            }else if(directed){
+                FillTransition ftEdge = new FillTransition(Duration.millis(time), x);
+                ftEdge.setToValue(Color.BLACK);
+                ftEdge.play();
+            }
+        }
         canvasGroup.getChildren().remove(sourceText);
         for (Label x : distances) {
             x.setText("Distance : INFINITY");
@@ -380,6 +392,9 @@ public class CanvasController implements Initializable, ChangeListener {
             x.setText("Low Value : NULL");
             canvasGroup.getChildren().remove(x);
         }
+        Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
+        playPauseImage.setImage(image);
+        
         distances = new ArrayList<Label>();
         visitTime = new ArrayList<Label>();
         lowTime = new ArrayList<Label>();
@@ -392,6 +407,7 @@ public class CanvasController implements Initializable, ChangeListener {
         dijkstra = false;
         playing = false;
         paused = false;
+        
     }
 
     @FXML
@@ -407,8 +423,10 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
-            articulationPointButton.setDisable(false);
-            articulationPointButton.setSelected(false);
+            if(undirected){
+                articulationPointButton.setDisable(false);
+                articulationPointButton.setSelected(false);
+            }
         }
         if (weighted) {
             dijkstraButton.setDisable(false);
@@ -606,10 +624,15 @@ public class CanvasController implements Initializable, ChangeListener {
                     FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
                     ft1.setToValue(Color.RED);
                     ft1.play();
+                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                    playPauseImage.setImage(image);
+                    paused = true;
+                    playing = false;
                 });
                 st.onFinishedProperty();
                 st.play();
                 playing = true;
+                paused = false;
                 //</editor-fold>
             }
         }
@@ -664,9 +687,15 @@ public class CanvasController implements Initializable, ChangeListener {
 
                                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                                 //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
-                                ftEdge.setToValue(Color.rgb(163, 203, 56,1.0));
-                                st.getChildren().add(ftEdge);
+                                if(undirected){
+                                    StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                    ftEdge.setToValue(Color.FORESTGREEN);
+                                    st.getChildren().add(ftEdge);
+                                }else if(directed){
+                                    FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                    ftEdge.setToValue(Color.FORESTGREEN);
+                                    st.getChildren().add(ftEdge);
+                                }
                                 //</editor-fold>
                                 FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                                 ft1.setToValue(Color.FORESTGREEN);
@@ -693,16 +722,26 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft1.setToValue(Color.BLACK);
                         ft1.play();
                     }
-                    for(Shape n : edges){
-                        n.setStroke(Color.BLACK);
-                    }
+                    if(directed)
+                        for(Shape n : edges){
+                            n.setFill(Color.BLACK);
+                        }
+                    else if(undirected)
+                        for(Shape n : edges){
+                            n.setStroke(Color.BLACK);
+                        }
                     FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
                     ft1.setToValue(Color.RED);
                     ft1.play();
+                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                    playPauseImage.setImage(image);
+                    paused = true;
+                    playing = false;
                 });
                 st.onFinishedProperty();
                 st.play();
                 playing = true;
+                paused = false;
                 //</editor-fold>
             }
         }
@@ -742,16 +781,26 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft1.setToValue(Color.BLACK);
                         ft1.play();
                     }
-                    for(Shape n : edges){
-                        n.setStroke(Color.BLACK);
-                    }
+                    if(directed)
+                        for(Shape n : edges){
+                            n.setFill(Color.BLACK);
+                        }
+                    else if(undirected)
+                        for(Shape n : edges){
+                            n.setStroke(Color.BLACK);
+                        }
                     FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
                     ft1.setToValue(Color.RED);
                     ft1.play();
+                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                    playPauseImage.setImage(image);
+                    paused = true;
+                    playing = false;
                 });
                 st.onFinishedProperty();
                 st.play();
                 playing = true;
+                paused = false;
                 //</editor-fold>
             }
 
@@ -772,16 +821,28 @@ public class CanvasController implements Initializable, ChangeListener {
                             v.previous = source;
 //                        v.circle.distance.setText("Dist. : " + v.minDistance);
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
-                            ftEdge.setToValue(Color.FORESTGREEN);
-                            st.getChildren().add(ftEdge);
+                            if(undirected){
+                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.FORESTGREEN);
+                                st.getChildren().add(ftEdge);
+                            }else if(directed){
+                                FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.FORESTGREEN);
+                                st.getChildren().add(ftEdge);
+                            }
                             //</editor-fold>
                             DFSRecursion(v);
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            StrokeTransition ftEdge1 = new StrokeTransition(Duration.millis(time), e.line);
-                            ftEdge1.setToValue(Color.BLUEVIOLET);
-                            st.getChildren().add(ftEdge1);
+                            if(undirected){
+                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.BLUEVIOLET);
+                                st.getChildren().add(ftEdge);
+                            }else if(directed){
+                                FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.BLUEVIOLET);
+                                st.getChildren().add(ftEdge);
+                            }
                             //</editor-fold>
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.BLUEVIOLET);
@@ -847,9 +908,14 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft1.setToValue(Color.BLACK);
                         ft1.play();
                     }
-                    for(Shape n : edges){
-                        n.setStroke(Color.BLACK);
-                    }
+                    if(directed)
+                        for(Shape n : edges){
+                            n.setFill(Color.BLACK);
+                        }
+                    else if(undirected)
+                        for(Shape n : edges){
+                            n.setStroke(Color.BLACK);
+                        }
                     for (NodeFX n : circles) {
                         if (n.node.isArticulationPoint) {
                             FillTransition ft1 = new FillTransition(Duration.millis(time), n);
@@ -857,6 +923,10 @@ public class CanvasController implements Initializable, ChangeListener {
                             ft1.play();
                         }
                     }
+                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                    playPauseImage.setImage(image);
+                    paused = true;
+                    playing = false;
                 });
                 st.onFinishedProperty();
                 st.play();
@@ -893,9 +963,15 @@ public class CanvasController implements Initializable, ChangeListener {
                             v.previous = s;
                             childCount++;
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
-                            ftEdge.setToValue(Color.FORESTGREEN);
-                            st.getChildren().add(ftEdge);
+                            if(undirected){
+                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.FORESTGREEN);
+                                st.getChildren().add(ftEdge);
+                            }else if(directed){
+                                FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.FORESTGREEN);
+                                st.getChildren().add(ftEdge);
+                            }
                             //</editor-fold>
                             RecAP(v);
 
@@ -906,9 +982,15 @@ public class CanvasController implements Initializable, ChangeListener {
 
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             ///<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            StrokeTransition ftEdge1 = new StrokeTransition(Duration.millis(time), e.line);
-                            ftEdge1.setToValue(Color.BLUEVIOLET);
-                            st.getChildren().add(ftEdge1);
+                            if(undirected){
+                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.BLUEVIOLET);
+                                st.getChildren().add(ftEdge);
+                            }else if(directed){
+                                FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.BLUEVIOLET);
+                                st.getChildren().add(ftEdge);
+                            }
                             //</editor-fold>
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.BLUEVIOLET);
