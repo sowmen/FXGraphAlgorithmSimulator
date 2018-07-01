@@ -17,12 +17,14 @@ import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.StrokeTransition;
+import javafx.animation.Transition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -55,6 +57,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.controlsfx.control.HiddenSidesPane;
 
@@ -104,6 +109,8 @@ public class CanvasController implements Initializable, ChangeListener {
     public AnchorPane hiddenRoot = new AnchorPane();
     public static TextArea textFlow = new TextArea();
     public ScrollPane textContainer = new ScrollPane();
+
+    public String topSort = "";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -156,8 +163,9 @@ public class CanvasController implements Initializable, ChangeListener {
 
         slider.valueProperty().addListener(this);
 
-        hiddenRoot.setPrefWidth(200);
+        hiddenRoot.setPrefWidth(250);
         hiddenRoot.setPrefHeight(581);
+
         hiddenRoot.setCursor(Cursor.DEFAULT);
 
         //Set Label "Detail"
@@ -446,6 +454,7 @@ public class CanvasController implements Initializable, ChangeListener {
     public void ClearHandle(ActionEvent event) {
         selectedNode = null;
         calculated = false;
+        topSort = "";
         for (NodeFX n : circles) {
             n.isSelected = false;
             n.node.visited = false;
@@ -672,7 +681,7 @@ public class CanvasController implements Initializable, ChangeListener {
      */
     public class Algorithm {
 
-        //<editor-fold defaultstate="collapsed" desc="Dijkstra">
+        //<editor-fold defaultstate="collapsed" desc="Dijkstra">    
         public void newDijkstra(Node source) {
             new Dijkstra(source);
         }
@@ -705,7 +714,17 @@ public class CanvasController implements Initializable, ChangeListener {
                     FillTransition ft = new FillTransition(Duration.millis(time), u.circle);
                     ft.setToValue(Color.CHOCOLATE);
                     st.getChildren().add(ft);
+                    String str = "";
+                    str = str.concat("Popped : Node(" + u.name + "), Current Distance: " + u.minDistance + "\n");
+                    final String str2 = str;
+                    FadeTransition fd = new FadeTransition(Duration.millis(10), textFlow);
+                    fd.setOnFinished(e -> {
+                        textFlow.appendText(str2);
+                    });
+                    fd.onFinishedProperty();
+                    st.getChildren().add(fd);
                     //</editor-fold>
+                    System.out.println(u.name);
                     for (Edge e : u.adjacents) {
                         if (e != null) {
                             Node v = e.target;
@@ -715,6 +734,17 @@ public class CanvasController implements Initializable, ChangeListener {
                                 v.minDistance = u.minDistance + e.weight;
                                 v.previous = u;
                                 pq.add(v);
+                                //<editor-fold defaultstate="collapsed" desc="Node visiting animation">
+                                //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
+                                if (undirected) {
+                                    StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                    ftEdge.setToValue(Color.FORESTGREEN);
+                                    st.getChildren().add(ftEdge);
+                                } else if (directed) {
+                                    FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                    ftEdge.setToValue(Color.FORESTGREEN);
+                                    st.getChildren().add(ftEdge);
+                                }
                                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                                 FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                                 ft1.setToValue(Color.FORESTGREEN);
@@ -723,6 +753,16 @@ public class CanvasController implements Initializable, ChangeListener {
                                 });
                                 ft1.onFinishedProperty();
                                 st.getChildren().add(ft1);
+
+                                str = "\t";
+                                str = str.concat("Pushing : Node(" + v.name + "), (" + u.name + "--" + v.name + ") Distance : " + v.minDistance + "\n");
+                                final String str1 = str;
+                                FadeTransition fd2 = new FadeTransition(Duration.millis(10), textFlow);
+                                fd2.setOnFinished(ev -> {
+                                    textFlow.appendText(str1);
+                                });
+                                fd2.onFinishedProperty();
+                                st.getChildren().add(fd2);
                                 //</editor-fold>
                             }
                         }
@@ -748,6 +788,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
+                    textFlow.appendText("---Finished--\n");
                 });
                 st.onFinishedProperty();
                 st.play();
@@ -891,14 +932,14 @@ public class CanvasController implements Initializable, ChangeListener {
         }
         //</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="DFS">
-        public void newDFS(Node source) {
-            new DFS(source);
+        //<editor-fold defaultstate="collapsed" desc="TopSort">
+        public void newTopSort(Node source) {
+            new TopSort(source);
         }
 
-        class DFS {
+        class TopSort {
 
-            DFS(Node source) {
+            TopSort(Node source) {
 
                 //<editor-fold defaultstate="collapsed" desc="Animation Setup Distances">
                 for (NodeFX n : circles) {
@@ -917,6 +958,8 @@ public class CanvasController implements Initializable, ChangeListener {
                 source.minDistance = 0;
                 source.visited = true;
                 DFSRecursion(source, 0);
+                System.out.println("Hello World " + topSort);
+                String reverse = new StringBuffer(topSort).reverse().toString();
 
                 //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
                 st.setOnFinished(ev -> {
@@ -941,10 +984,13 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
-                    textFlow.appendText("---Finished--\n");
+                    textFlow.appendText("---Finished--\n\n");
+                    textFlow.appendText("Top Sort: " + reverse);
+
                 });
                 st.onFinishedProperty();
                 st.play();
+
                 playing = true;
                 paused = false;
                 //</editor-fold>
@@ -1018,6 +1064,8 @@ public class CanvasController implements Initializable, ChangeListener {
                 for (int i = 0; i < level; i++) {
                     str = str.concat("\t");
                 }
+                topSort = topSort.concat(" " + source.name);
+                System.out.println(topSort);
                 str = str.concat("DFS(" + source.name + ") Exit\n");
                 final String str1 = str;
                 fd = new FadeTransition(Duration.millis(10), textFlow);
@@ -1206,22 +1254,23 @@ public class CanvasController implements Initializable, ChangeListener {
                 if (px == py) {
                     return;
                 }
-                if(Integer.valueOf(px.name) < Integer.valueOf(py.name))
+                if (Integer.valueOf(px.name) < Integer.valueOf(py.name)) {
                     px.previous = py;
-                else 
+                } else {
                     py.previous = px;
+                }
             }
 
             public MST() {
-                
+
                 st = new SequentialTransition();
                 for (NodeFX x : circles) {
                     x.node.previous = x.node;
                 }
-                
+
                 //<editor-fold defaultstate="collapsed" desc="Detail Information">
                 String init = "Intially : \n";
-                for(NodeFX x : circles){ 
+                for (NodeFX x : circles) {
                     final String s = "Node : " + x.node.name + " , Parent: " + x.node.previous.name + "\n";
                     FadeTransition fd = new FadeTransition(Duration.millis(10), textFlow);
                     fd.setOnFinished(e -> {
@@ -1246,30 +1295,30 @@ public class CanvasController implements Initializable, ChangeListener {
                         return o1.weight > o2.weight ? 1 : -1;
                     }
                 });
-            
+
                 for (Edge e : mstEdges) {
-                    
+
                     StrokeTransition ft1 = new StrokeTransition(Duration.millis(time), e.line);
                     ft1.setToValue(Color.DARKORANGE);
                     st.getChildren().add(ft1);
-                    
+
                     //<editor-fold defaultstate="collapsed" desc="Detail Information">
-                    final String se = "Selected Edge:- (" + e.source.name.trim() + "--" + e.target.name.trim()+") Weight: "+ String.valueOf(e.weight) +" \n";
+                    final String se = "Selected Edge:- (" + e.source.name.trim() + "--" + e.target.name.trim() + ") Weight: " + String.valueOf(e.weight) + " \n";
                     FadeTransition fdx = new FadeTransition(Duration.millis(10), textFlow);
                     fdx.setOnFinished(evx -> {
                         textFlow.appendText(se);
                     });
                     fdx.onFinishedProperty();
                     st.getChildren().add(fdx);
-                    
-                    final String s1 = "\t-> Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n" ;
+
+                    final String s1 = "\t-> Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n";
                     FadeTransition fdx2 = new FadeTransition(Duration.millis(10), textFlow);
                     fdx2.setOnFinished(evx -> {
                         textFlow.appendText(s1);
                     });
                     fdx2.onFinishedProperty();
                     st.getChildren().add(fdx2);
-                    
+
                     final String s2 = "\t-> Node :" + e.target.name.trim() + "  Parent: " + findParent(e.target.previous).name.trim() + "\n";
                     FadeTransition fdx3 = new FadeTransition(Duration.millis(10), textFlow);
                     fdx3.setOnFinished(evx -> {
@@ -1278,11 +1327,11 @@ public class CanvasController implements Initializable, ChangeListener {
                     fdx3.onFinishedProperty();
                     st.getChildren().add(fdx3);
                     //</editor-fold>
-                  
+
                     if (findParent(e.source.previous) != findParent(e.target.previous)) {
                         unionNode(e.source, e.target);
                         mstValue += e.weight;
-                        
+
                         //<editor-fold defaultstate="collapsed" desc="Detail Information">
                         final String sa = "\t---->Unioned\n";
                         final String sa1 = "\t\t->Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n";
@@ -1305,21 +1354,20 @@ public class CanvasController implements Initializable, ChangeListener {
                         });
                         fdx6.onFinishedProperty();
                         st.getChildren().add(fdx6);
-                        
-                        
+
                         StrokeTransition ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.DARKGREEN);
                         st.getChildren().add(ft2);
-                        
+
                         FillTransition ft3 = new FillTransition(Duration.millis(time), e.source.circle);
                         ft3.setToValue(Color.AQUA);
                         st.getChildren().add(ft3);
-                        
+
                         ft3 = new FillTransition(Duration.millis(time), e.target.circle);
                         ft3.setToValue(Color.AQUA);
                         st.getChildren().add(ft3);
                         //</editor-fold>
-                    }else{
+                    } else {
                         //<editor-fold defaultstate="collapsed" desc="Detail Info">
                         final String sa = "\t---->Cycle Detected\n";
                         FadeTransition fdx7 = new FadeTransition(Duration.millis(10), textFlow);
@@ -1332,11 +1380,11 @@ public class CanvasController implements Initializable, ChangeListener {
                         StrokeTransition ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.DARKRED);
                         st.getChildren().add(ft2);
-                        
+
                         ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.web("#E0E0E0"));
                         st.getChildren().add(ft2);
-                        
+
                     }
                 }
 
@@ -1346,15 +1394,156 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
+                    textFlow.appendText("Minimum Cost of the Graph " + mstValue);
                 });
                 st.onFinishedProperty();
                 st.play();
                 playing = true;
                 //</editor-fold>
+                System.out.println("" + mstValue);
             }
         }
         //</editor-fold>
 
+        //<editor-fold defaultstate="collapsed" desc="DFS">
+        public void newDFS(Node source) {
+            new DFS(source);
+        }
+
+        class DFS {
+
+            DFS(Node source) {
+
+                //<editor-fold defaultstate="collapsed" desc="Animation Setup Distances">
+                for (NodeFX n : circles) {
+                    distances.add(n.distance);
+                    n.distance.setLayoutX(n.point.x + 20);
+                    n.distance.setLayoutY(n.point.y);
+                    canvasGroup.getChildren().add(n.distance);
+                }
+                sourceText.setLayoutX(source.circle.point.x + 20);
+                sourceText.setLayoutY(source.circle.point.y + 10);
+                canvasGroup.getChildren().add(sourceText);
+                st = new SequentialTransition();
+                source.circle.distance.setText("Dist. : " + 0);
+                //</editor-fold>
+
+                source.minDistance = 0;
+                source.visited = true;
+                DFSRecursion(source, 0);
+
+                //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
+                st.setOnFinished(ev -> {
+                    for (NodeFX n : circles) {
+                        FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                        ft1.setToValue(Color.BLACK);
+                        ft1.play();
+                    }
+                    if (directed) {
+                        for (Shape n : edges) {
+                            n.setFill(Color.BLACK);
+                        }
+                    } else if (undirected) {
+                        for (Shape n : edges) {
+                            n.setStroke(Color.BLACK);
+                        }
+                    }
+                    FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
+                    ft1.setToValue(Color.RED);
+                    ft1.play();
+                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                    playPauseImage.setImage(image);
+                    paused = true;
+                    playing = false;
+                    textFlow.appendText("---Finished--\n");
+                });
+                st.onFinishedProperty();
+                st.play();
+                playing = true;
+                paused = false;
+                //</editor-fold>
+            }
+
+            public void DFSRecursion(Node source, int level) {
+                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                FillTransition ft = new FillTransition(Duration.millis(time), source.circle);
+                if (source.circle.getFill() == Color.BLACK) {
+                    ft.setToValue(Color.FORESTGREEN);
+                }
+                st.getChildren().add(ft);
+
+                String str = "";
+                for (int i = 0; i < level; i++) {
+                    str = str.concat("\t");
+                }
+                str = str.concat("DFS(" + source.name + ") Enter\n");
+                final String str2 = str;
+                FadeTransition fd = new FadeTransition(Duration.millis(10), textFlow);
+                fd.setOnFinished(e -> {
+                    textFlow.appendText(str2);
+                });
+                fd.onFinishedProperty();
+                st.getChildren().add(fd);
+                //</editor-fold>
+                for (Edge e : source.adjacents) {
+                    if (e != null) {
+                        Node v = e.target;
+                        if (!v.visited) {
+                            v.minDistance = source.minDistance + 1;
+                            v.visited = true;
+                            v.previous = source;
+//                        v.circle.distance.setText("Dist. : " + v.minDistance);
+                            //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
+                            if (undirected) {
+                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.FORESTGREEN);
+                                st.getChildren().add(ftEdge);
+                            } else if (directed) {
+                                FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.FORESTGREEN);
+                                st.getChildren().add(ftEdge);
+                            }
+                            //</editor-fold>
+                            DFSRecursion(v, level + 1);
+                            //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                            //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
+                            if (undirected) {
+                                StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.BLUEVIOLET);
+                                st.getChildren().add(ftEdge);
+                            } else if (directed) {
+                                FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                ftEdge.setToValue(Color.BLUEVIOLET);
+                                st.getChildren().add(ftEdge);
+                            }
+                            //</editor-fold>
+                            FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
+                            ft1.setToValue(Color.BLUEVIOLET);
+                            ft1.onFinishedProperty();
+                            ft1.setOnFinished(ev -> {
+                                v.circle.distance.setText("Dist. : " + v.minDistance);
+                            });
+                            st.getChildren().add(ft1);
+                            //</editor-fold>
+                        }
+                    }
+                }
+                str = "";
+                for (int i = 0; i < level; i++) {
+                    str = str.concat("\t");
+                }
+                str = str.concat("DFS(" + source.name + ") Exit\n");
+                final String str1 = str;
+                fd = new FadeTransition(Duration.millis(10), textFlow);
+                fd.setOnFinished(e -> {
+                    textFlow.appendText(str1);
+                });
+                fd.onFinishedProperty();
+                st.getChildren().add(fd);
+            }
+        }
+
+        //</editor-fold>
         public List<Node> getShortestPathTo(Node target) {
             List<Node> path = new ArrayList<Node>();
             for (Node i = target; i != null; i = i.previous) {
