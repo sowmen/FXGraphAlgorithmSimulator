@@ -218,6 +218,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 hiddenPane.setPinnedSide(null);
             e.consume();
         });
+        hiddenPane.setTriggerDistance(60);
         
     }
 
@@ -749,12 +750,13 @@ public class CanvasController implements Initializable, ChangeListener {
                 q.push(source);
                 while (!q.isEmpty()) {
                     Node u = q.removeLast();
-                    //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                    //<editor-fold defaultstate="collapsed" desc="Node Popped Animation">
                     FillTransition ft = new FillTransition(Duration.millis(time), u.circle);
                     if (u.circle.getFill() == Color.BLACK) {
                         ft.setToValue(Color.CHOCOLATE);
                     }
                     st.getChildren().add(ft);
+                    
                     String str = "";
                     str = str.concat("Popped : Node(" + u.name + ")\n");
                     final String str2 = str;
@@ -776,7 +778,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                 q.push(v);
                                 v.previous = u;
 
-                                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                                //<editor-fold defaultstate="collapsed" desc="Node visiting animation">
                                 //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
                                 if (undirected) {
                                     StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
@@ -795,6 +797,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                 });
                                 ft1.onFinishedProperty();
                                 st.getChildren().add(ft1);
+                                
                                 str = "\t";                                
                                 str = str.concat("Pushing : Node(" + v.name + ")\n");
                                 final String str1 = str;
@@ -917,6 +920,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     ft.setToValue(Color.FORESTGREEN);
                 }
                 st.getChildren().add(ft);
+                
                 String str = "";
                 for(int i=0; i<level; i++)
                     str = str.concat("\t");
