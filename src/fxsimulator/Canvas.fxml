@@ -75,16 +75,17 @@
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                </padding>
             </HBox>
-            <GridPane hgap="10.0" layoutY="60.0" prefHeight="229.0" prefWidth="200.0" vgap="5.0">
+            <GridPane hgap="10.0" layoutX="1.0" layoutY="88.0" prefHeight="244.0" prefWidth="200.0" vgap="5.0">
                <columnConstraints>
                   <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="42.0" valignment="CENTER" />
-                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="42.0" valignment="CENTER" />
+                  <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
+                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
+                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
                   <RowConstraints maxHeight="25.0" minHeight="5.0" prefHeight="42.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
@@ -123,6 +124,17 @@
                      </GridPane.margin>
                      <padding>
                         <Insets left="10.0" />
+                     </padding>
+                  </JFXToggleButton>
+                  <JFXToggleButton fx:id="mstButton" alignment="BASELINE_CENTER" onAction="#MSTHandle" prefHeight="78.0" prefWidth="161.0" size="9.0" text="MST" toggleColor="#ff5722" toggleGroup="$algoToggleGroup" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="5">
+                     <font>
+                        <Font name="Roboto Light" size="20.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets right="25.0" />
                      </padding>
                   </JFXToggleButton>
                </children>
