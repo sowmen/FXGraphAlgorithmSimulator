@@ -704,7 +704,17 @@ public class CanvasController implements Initializable, ChangeListener {
                     FillTransition ft = new FillTransition(Duration.millis(time), u.circle);
                     ft.setToValue(Color.CHOCOLATE);
                     st.getChildren().add(ft);
+                    String str = "";
+                    str = str.concat("Popped : Node(" + u.name + "), Current Distance: " + u.minDistance + "\n");
+                    final String str2 = str;
+                    FadeTransition fd = new FadeTransition(Duration.millis(10), textFlow);
+                    fd.setOnFinished(e -> {
+                        textFlow.appendText(str2);
+                    });
+                    fd.onFinishedProperty();
+                    st.getChildren().add(fd);
                     //</editor-fold>
+                    System.out.println(u.name);
                     for (Edge e : u.adjacents) {
                         if (e != null) {
                             Node v = e.target;
@@ -714,6 +724,17 @@ public class CanvasController implements Initializable, ChangeListener {
                                 v.minDistance = u.minDistance + e.weight;
                                 v.previous = u;
                                 pq.add(v);
+                                //<editor-fold defaultstate="collapsed" desc="Node visiting animation">
+                                //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
+                                if (undirected) {
+                                    StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
+                                    ftEdge.setToValue(Color.FORESTGREEN);
+                                    st.getChildren().add(ftEdge);
+                                } else if (directed) {
+                                    FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
+                                    ftEdge.setToValue(Color.FORESTGREEN);
+                                    st.getChildren().add(ftEdge);
+                                }
                                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                                 FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                                 ft1.setToValue(Color.FORESTGREEN);
@@ -722,6 +743,16 @@ public class CanvasController implements Initializable, ChangeListener {
                                 });
                                 ft1.onFinishedProperty();
                                 st.getChildren().add(ft1);
+
+                                str = "\t";
+                                str = str.concat("Pushing : Node(" + v.name + "), (" + u.name + "--" + v.name + ") Distance : " + v.minDistance + "\n");
+                                final String str1 = str;
+                                FadeTransition fd2 = new FadeTransition(Duration.millis(10), textFlow);
+                                fd2.setOnFinished(ev -> {
+                                    textFlow.appendText(str1);
+                                });
+                                fd2.onFinishedProperty();
+                                st.getChildren().add(fd2);
                                 //</editor-fold>
                             }
                         }
@@ -747,6 +778,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
+                    textFlow.appendText("---Finished--\n");
                 });
                 st.onFinishedProperty();
                 st.play();
