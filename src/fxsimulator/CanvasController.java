@@ -156,7 +156,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
         slider.valueProperty().addListener(this);
 
-        hiddenRoot.setPrefWidth(200);
+        hiddenRoot.setPrefWidth(300);
         hiddenRoot.setPrefHeight(580);
         hiddenRoot.setCursor(Cursor.DEFAULT);
 
@@ -1205,22 +1205,23 @@ public class CanvasController implements Initializable, ChangeListener {
                 if (px == py) {
                     return;
                 }
-                if(Integer.valueOf(px.name) < Integer.valueOf(py.name))
+                if (Integer.valueOf(px.name) < Integer.valueOf(py.name)) {
                     px.previous = py;
-                else 
+                } else {
                     py.previous = px;
+                }
             }
 
             public MST() {
-                
+
                 st = new SequentialTransition();
                 for (NodeFX x : circles) {
                     x.node.previous = x.node;
                 }
-                
+
                 //<editor-fold defaultstate="collapsed" desc="Detail Information">
                 String init = "Intially : \n";
-                for(NodeFX x : circles){ 
+                for (NodeFX x : circles) {
                     final String s = "Node : " + x.node.name + " , Parent: " + x.node.previous.name + "\n";
                     FadeTransition fd = new FadeTransition(Duration.millis(10), textFlow);
                     fd.setOnFinished(e -> {
@@ -1245,30 +1246,30 @@ public class CanvasController implements Initializable, ChangeListener {
                         return o1.weight > o2.weight ? 1 : -1;
                     }
                 });
-            
+
                 for (Edge e : mstEdges) {
-                    
+
                     StrokeTransition ft1 = new StrokeTransition(Duration.millis(time), e.line);
                     ft1.setToValue(Color.DARKORANGE);
                     st.getChildren().add(ft1);
-                    
+
                     //<editor-fold defaultstate="collapsed" desc="Detail Information">
-                    final String se = "Selected Edge:- (" + e.source.name.trim() + "--" + e.target.name.trim()+") Weight: "+ String.valueOf(e.weight) +" \n";
+                    final String se = "Selected Edge:- (" + e.source.name.trim() + "--" + e.target.name.trim() + ") Weight: " + String.valueOf(e.weight) + " \n";
                     FadeTransition fdx = new FadeTransition(Duration.millis(10), textFlow);
                     fdx.setOnFinished(evx -> {
                         textFlow.appendText(se);
                     });
                     fdx.onFinishedProperty();
                     st.getChildren().add(fdx);
-                    
-                    final String s1 = "\t-> Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n" ;
+
+                    final String s1 = "\t-> Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n";
                     FadeTransition fdx2 = new FadeTransition(Duration.millis(10), textFlow);
                     fdx2.setOnFinished(evx -> {
                         textFlow.appendText(s1);
                     });
                     fdx2.onFinishedProperty();
                     st.getChildren().add(fdx2);
-                    
+
                     final String s2 = "\t-> Node :" + e.target.name.trim() + "  Parent: " + findParent(e.target.previous).name.trim() + "\n";
                     FadeTransition fdx3 = new FadeTransition(Duration.millis(10), textFlow);
                     fdx3.setOnFinished(evx -> {
@@ -1277,11 +1278,11 @@ public class CanvasController implements Initializable, ChangeListener {
                     fdx3.onFinishedProperty();
                     st.getChildren().add(fdx3);
                     //</editor-fold>
-                  
+
                     if (findParent(e.source.previous) != findParent(e.target.previous)) {
                         unionNode(e.source, e.target);
                         mstValue += e.weight;
-                        
+
                         //<editor-fold defaultstate="collapsed" desc="Detail Information">
                         final String sa = "\t---->Unioned\n";
                         final String sa1 = "\t\t->Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n";
@@ -1304,21 +1305,20 @@ public class CanvasController implements Initializable, ChangeListener {
                         });
                         fdx6.onFinishedProperty();
                         st.getChildren().add(fdx6);
-                        
-                        
+
                         StrokeTransition ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.DARKGREEN);
                         st.getChildren().add(ft2);
-                        
+
                         FillTransition ft3 = new FillTransition(Duration.millis(time), e.source.circle);
                         ft3.setToValue(Color.AQUA);
                         st.getChildren().add(ft3);
-                        
+
                         ft3 = new FillTransition(Duration.millis(time), e.target.circle);
                         ft3.setToValue(Color.AQUA);
                         st.getChildren().add(ft3);
                         //</editor-fold>
-                    }else{
+                    } else {
                         //<editor-fold defaultstate="collapsed" desc="Detail Info">
                         final String sa = "\t---->Cycle Detected\n";
                         FadeTransition fdx7 = new FadeTransition(Duration.millis(10), textFlow);
@@ -1331,11 +1331,11 @@ public class CanvasController implements Initializable, ChangeListener {
                         StrokeTransition ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.DARKRED);
                         st.getChildren().add(ft2);
-                        
+
                         ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.web("#E0E0E0"));
                         st.getChildren().add(ft2);
-                        
+
                     }
                 }
 
@@ -1345,11 +1345,13 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
+                    textFlow.appendText("Minimum Cost of the Graph " + mstValue);
                 });
                 st.onFinishedProperty();
                 st.play();
                 playing = true;
                 //</editor-fold>
+                System.out.println("" + mstValue);
             }
         }
         //</editor-fold>
