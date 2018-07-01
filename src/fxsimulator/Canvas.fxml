@@ -19,19 +19,25 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 <?import jfxtras.scene.layout.VBox?>
+<?import org.controlsfx.control.HiddenSidesPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="823.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.CanvasController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.CanvasController">
    <children>
-      <Pane fx:id="border" layoutX="199.0" prefHeight="580.0" prefWidth="624.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane fx:id="border" layoutX="199.0" prefHeight="580.0" prefWidth="702.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <Group fx:id="canvasGroup" layoutX="200.0" layoutY="-3.0" onMouseClicked="#handle" onMouseDragged="#handle" onMouseEntered="#handle" onMouseExited="#handle" onMouseMoved="#handle" onMousePressed="#handle" onMouseReleased="#handle">
          <children>
-            <Pane fx:id="viewer" onMouseClicked="#handle" onMouseDragged="#handle" onMouseEntered="#handle" onMouseExited="#handle" onMouseMoved="#handle" onMousePressed="#handle" onMouseReleased="#handle" prefHeight="588.0" prefWidth="624.0" style="-fx-background-color: #E0E0E0;">
+            <Pane fx:id="viewer" onMouseClicked="#handle" onMouseDragged="#handle" onMouseEntered="#handle" onMouseExited="#handle" onMouseMoved="#handle" onMousePressed="#handle" onMouseReleased="#handle" prefHeight="627.0" prefWidth="702.0" style="-fx-background-color: #E0E0E0;">
                <cursor>
                   <Cursor fx:constant="CROSSHAIR" />
                </cursor>
             </Pane>
          </children>
       </Group>
+      <HiddenSidesPane fx:id="hiddenPane" layoutX="200.0" layoutY="-3.0" prefHeight="628.0" prefWidth="701.0" style="-fx-background-color: #E0E0E0;">
+         <cursor>
+            <Cursor fx:constant="CROSSHAIR" />
+         </cursor>
+      </HiddenSidesPane>
       <AnchorPane prefHeight="580.0" prefWidth="200.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <JFXButton fx:id="canvasBackButton" contentDisplay="GRAPHIC_ONLY" prefHeight="30.0" prefWidth="34.0">
@@ -126,12 +132,12 @@
             </GridPane>
             <VBox layoutX="20.0" layoutY="395.0" prefHeight="102.0" prefWidth="162.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="18.0">
                <children>
-                  <JFXToggleButton fx:id="addNodeButton" onAction="#AddNodeHandle" prefHeight="19.0" prefWidth="162.0" text="Add Node" textFill="#d3c5c5">
+                  <JFXToggleButton fx:id="addNodeButton" onAction="#AddNodeHandle" prefHeight="19.0" prefWidth="162.0" text="Add Node" textFill="#d3c5c5" toggleGroup="$algoToggleGroup">
                      <font>
                         <Font name="Junction Regular Regular" size="13.0" />
                      </font>
                   </JFXToggleButton>
-                  <JFXToggleButton fx:id="addEdgeButton" onAction="#AddEdgeHandle" prefHeight="58.0" prefWidth="164.0" text="Add Edge" textFill="#d3c5c5">
+                  <JFXToggleButton fx:id="addEdgeButton" onAction="#AddEdgeHandle" prefHeight="58.0" prefWidth="164.0" text="Add Edge" textFill="#d3c5c5" toggleGroup="$algoToggleGroup">
                      <font>
                         <Font name="Junction Regular Regular" size="13.0" />
                      </font>
@@ -141,6 +147,22 @@
                   <Insets right="27.0" />
                </padding>
             </VBox>
+            <JFXButton fx:id="playPauseButton" contentDisplay="GRAPHIC_ONLY" layoutX="111.0" layoutY="1.0" onAction="#PlayPauseHandle" prefHeight="35.0" prefWidth="44.0" style="-fx-background-radius: 100;">
+               <graphic>
+                  <ImageView fx:id="playPauseImage" fitHeight="28.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../res/pause_black_48x48.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Pause" textAlignment="CENTER">
+                     <font>
+                        <Font size="12.5" />
+                     </font>
+                  </Tooltip>
+               </tooltip>
+            </JFXButton>
             <JFXNodesList fx:id="nodeList" layoutX="147.0" layoutY="1.0" prefHeight="0.0" prefWidth="0.0">
                <children>
                   <JFXButton fx:id="gear" contentDisplay="GRAPHIC_ONLY" prefHeight="35.0" prefWidth="44.0" style="-fx-background-radius: 100;">
@@ -161,22 +183,6 @@
                   </JFXButton>
                </children>
             </JFXNodesList>
-            <JFXButton fx:id="playPauseButton" contentDisplay="GRAPHIC_ONLY" layoutX="111.0" layoutY="1.0" onAction="#PlayPauseHandle" prefHeight="35.0" prefWidth="44.0" style="-fx-background-radius: 100;">
-               <graphic>
-                  <ImageView fx:id="playPauseImage" fitHeight="28.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/pause_black_48x48.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Pause" textAlignment="CENTER">
-                     <font>
-                        <Font size="12.5" />
-                     </font>
-                  </Tooltip>
-               </tooltip>
-            </JFXButton>
          </children>
       </AnchorPane>
    </children>

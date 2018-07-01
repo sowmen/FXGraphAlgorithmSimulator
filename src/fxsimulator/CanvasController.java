@@ -16,6 +16,7 @@ import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
@@ -28,11 +29,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.BlendMode;
@@ -40,16 +47,20 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
+import org.controlsfx.control.HiddenSidesPane;
 
 public class CanvasController implements Initializable, ChangeListener {
 
+    @FXML
+    private HiddenSidesPane hiddenPane;
     @FXML
     private JFXButton canvasBackButton, clearButton, resetButton, gear, playPauseButton;
     @FXML
@@ -71,7 +82,7 @@ public class CanvasController implements Initializable, ChangeListener {
     @FXML
     private JFXNodesList nodeList;
     @FXML
-    private JFXSlider slider;
+    private JFXSlider slider = new JFXSlider();
     @FXML
     private ImageView playPauseImage;
 
@@ -81,16 +92,24 @@ public class CanvasController implements Initializable, ChangeListener {
     List<Edge> mstEdges = new ArrayList<Edge>();
     List<Shape> edges = new ArrayList<Shape>();
     boolean addNode = true, addEdge = false, calculate = false,
-            calculated = false, playing = false, paused = false;
+            calculated = false, playing = false, paused = false, pinned = false;
     List<Label> distances = new ArrayList<Label>(), visitTime = new ArrayList<Label>(), lowTime = new ArrayList<Label>();
     private boolean weighted = Panel1Controller.weighted, unweighted = Panel1Controller.unweighted,
             directed = Panel1Controller.directed, undirected = Panel1Controller.undirected,
             bfs = true, dfs = true, dijkstra = true, articulationPoint = true;
     Algorithm algo = new Algorithm();
-    SequentialTransition st;
+    public SequentialTransition st;
+
+    public AnchorPane hiddenRoot = new AnchorPane();
+    public static TextArea textFlow = new TextArea();
+    public ScrollPane textContainer = new ScrollPane();
+    
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        hiddenPane.setContent(canvasGroup);
+
         ResetHandle(null);
         viewer.prefHeightProperty().bind(border.heightProperty());
         viewer.prefWidthProperty().bind(border.widthProperty());
@@ -106,8 +125,11 @@ public class CanvasController implements Initializable, ChangeListener {
         if (unweighted) {
             dijkstraButton.setDisable(true);
         }
-        if(directed)
+        if (directed) {
             articulationPointButton.setDisable(true);
+        }
+
+        //Set back button action
         canvasBackButton.setOnAction(e -> {
             try {
                 ResetHandle(null);
@@ -120,6 +142,7 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         });
 
+        //Setup Slider
         slider = new JFXSlider(10, 1000, 500);
         slider.setPrefWidth(150);
         slider.setPrefHeight(80);
@@ -134,6 +157,68 @@ public class CanvasController implements Initializable, ChangeListener {
 
         slider.valueProperty().addListener(this);
 
+        hiddenRoot.setPrefWidth(160);
+        hiddenRoot.setPrefHeight(580);
+        hiddenRoot.setCursor(Cursor.DEFAULT);
+
+        //Set Label "Detail"
+        Label detailLabel = new Label("Detail");
+        detailLabel.setPrefSize(hiddenRoot.getPrefWidth() - 20, 38);
+        detailLabel.setAlignment(Pos.CENTER);
+        detailLabel.setFont(new Font("Roboto", 20));
+        detailLabel.setPadding(new Insets(7, 40, 3, -10));
+        detailLabel.setStyle("-fx-background-color: #dcdde1;");
+        detailLabel.setLayoutX(35);
+
+        //Set TextFlow pane properties
+        textFlow.setPrefSize(hiddenRoot.getPrefWidth(), hiddenRoot.getPrefHeight() - 10);
+        textFlow.setStyle("-fx-background-color: #dfe6e9;");
+        textFlow.setLayoutY(39);
+        textContainer.setLayoutY(textFlow.getLayoutY());
+        textFlow.setPadding(new Insets(5, 0, 0, 5));
+        textFlow.setEditable(false);
+        textContainer.setContent(textFlow);
+
+        //Set Pin/Unpin Button
+        JFXButton pinUnpin = new JFXButton();
+        pinUnpin.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+        ImageView imgPin = new ImageView(new Image(getClass().getResourceAsStream("/pinned.png")));
+        imgPin.setFitHeight(20);
+        imgPin.setFitWidth(20);
+        ImageView imgUnpin = new ImageView(new Image(getClass().getResourceAsStream("/unpinned.png")));
+        imgUnpin.setFitHeight(20);
+        imgUnpin.setFitWidth(20);
+        pinUnpin.setGraphic(imgPin);
+
+        pinUnpin.setPrefSize(20, 39);
+        pinUnpin.setButtonType(JFXButton.ButtonType.FLAT);
+        pinUnpin.setStyle("-fx-background-color: #dcdde1;");
+        pinUnpin.setOnMouseClicked(e -> {
+            if (pinned) {
+                pinUnpin.setGraphic(imgPin);
+                hiddenPane.setPinnedSide(null);
+                pinned = false;
+            } else {
+                pinUnpin.setGraphic(imgUnpin);
+                hiddenPane.setPinnedSide(Side.RIGHT);
+                pinned = true;
+            }
+        });
+
+        //Add Label and TextFlow to hiddenPane
+        hiddenRoot.getChildren().addAll(pinUnpin, detailLabel, textContainer);
+        hiddenPane.setRight(hiddenRoot);
+        hiddenRoot.setOnMouseEntered(e->{
+            hiddenPane.setPinnedSide(Side.RIGHT);
+            e.consume();
+        });
+        hiddenRoot.setOnMouseExited(e -> {
+            if(!pinned)
+                hiddenPane.setPinnedSide(null);
+            e.consume();
+        });
+        
     }
 
     //Listens change in the slider
@@ -170,13 +255,15 @@ public class CanvasController implements Initializable, ChangeListener {
                     nNode++;
                     NodeFX circle = new NodeFX(ev.getX(), ev.getY(), 1.2, String.valueOf(nNode));
                     canvasGroup.getChildren().add(circle);
-                    if(articulationStart == null)
+                    if (articulationStart == null) {
                         articulationStart = circle;
+                    }
                     circle.setOnMousePressed(mouseHandler);
                     circle.setOnMouseReleased(mouseHandler);
                     circle.setOnMouseDragged(mouseHandler);
                     circle.setOnMouseExited(mouseHandler);
                     circle.setOnMouseEntered(mouseHandler);
+                    circle.setCursor(Cursor.DEFAULT);
 
                     ScaleTransition tr = new ScaleTransition(Duration.millis(100), circle);
                     tr.setByX(10f);
@@ -188,7 +275,7 @@ public class CanvasController implements Initializable, ChangeListener {
         }
     }
 
-    //Selects a node when clicked on a node
+    //Selects a node when clicked on a node and performs action
     EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 
         @Override
@@ -256,9 +343,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     circle.isSelected = true;
                     selectedNode = circle;
 
-                    /**
-                     * WHAT TO DO WHEN SELECTED ON ACTIVE ALGORITHM
-                     */
+                    // WHAT TO DO WHEN SELECTED ON ACTIVE ALGORITHM
                     if (calculate && !calculated) {
                         if (bfs) {
                             algo.newBFS(circle.node);
@@ -267,9 +352,6 @@ public class CanvasController implements Initializable, ChangeListener {
                         } else if (dijkstra) {
                             algo.newDijkstra(circle.node);
                         }
-//                        else if (articulationPoint) {
-//                            algo.newArticulationPoint(circle.node);
-//                        }
 
                         calculated = true;
                     } else if (calculate && calculated && !articulationPoint) {
@@ -299,12 +381,12 @@ public class CanvasController implements Initializable, ChangeListener {
         }
 
     };
-    
+
     @FXML
-    public void PlayPauseHandle(ActionEvent event){
+    public void PlayPauseHandle(ActionEvent event) {
         System.out.println("IN PLAYPAUSE");
-        System.out.println(playing +" " + paused);
-        if(playing){
+        System.out.println(playing + " " + paused);
+        if (playing) {
             Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
             playPauseImage.setImage(image);
             System.out.println("Pausing");
@@ -312,8 +394,7 @@ public class CanvasController implements Initializable, ChangeListener {
             paused = true;
             playing = false;
             return;
-        }
-        else if(paused){
+        } else if (paused) {
             Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
             playPauseImage.setImage(image);
             st.play();
@@ -322,6 +403,7 @@ public class CanvasController implements Initializable, ChangeListener {
             return;
         }
     }
+
     @FXML
     public void ResetHandle(ActionEvent event) {
         ClearHandle(null);
@@ -345,7 +427,8 @@ public class CanvasController implements Initializable, ChangeListener {
         algo = new Algorithm();
         Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
         playPauseImage.setImage(image);
-        
+        hiddenPane.setPinnedSide(null);
+
         bfsButton.setDisable(true);
         dfsButton.setDisable(true);
         dijkstraButton.setDisable(true);
@@ -367,13 +450,13 @@ public class CanvasController implements Initializable, ChangeListener {
             FillTransition ft1 = new FillTransition(Duration.millis(300), n);
             ft1.setToValue(Color.BLACK);
             ft1.play();
-        };
-        for(Shape x : edges){
-            if(undirected){
+        }
+        for (Shape x : edges) {
+            if (undirected) {
                 StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), x);
                 ftEdge.setToValue(Color.BLACK);
                 ftEdge.play();
-            }else if(directed){
+            } else if (directed) {
                 FillTransition ftEdge = new FillTransition(Duration.millis(time), x);
                 ftEdge.setToValue(Color.BLACK);
                 ftEdge.play();
@@ -392,9 +475,11 @@ public class CanvasController implements Initializable, ChangeListener {
             x.setText("Low Value : NULL");
             canvasGroup.getChildren().remove(x);
         }
+        textFlow.clear();
+
         Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
         playPauseImage.setImage(image);
-        
+
         distances = new ArrayList<Label>();
         visitTime = new ArrayList<Label>();
         lowTime = new ArrayList<Label>();
@@ -407,7 +492,6 @@ public class CanvasController implements Initializable, ChangeListener {
         dijkstra = false;
         playing = false;
         paused = false;
-        
     }
 
     @FXML
@@ -423,7 +507,7 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
-            if(undirected){
+            if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
             }
@@ -448,7 +532,7 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
-            if(undirected){
+            if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
             }
@@ -546,11 +630,9 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /*
-     Algorithm Declarations -----------------------------------------------
+     * Algorithm Declarations -----------------------------------------------
      */
     public class Algorithm {
-
-        
 
         //<editor-fold defaultstate="collapsed" desc="Dijkstra">
         public void newDijkstra(Node source) {
@@ -673,12 +755,21 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft.setToValue(Color.CHOCOLATE);
                     }
                     st.getChildren().add(ft);
+                    String str = "";
+                    str = str.concat("Popped : Node(" + u.name + ")\n");
+                    final String str2 = str;
+                    FadeTransition fd = new FadeTransition(Duration.millis(10),textFlow);
+                    fd.setOnFinished(e->{
+                        textFlow.appendText(str2);
+                    });
+                    fd.onFinishedProperty();
+                    st.getChildren().add(fd);
                     //</editor-fold>
                     System.out.println(u.name);
                     for (Edge e : u.adjacents) {
                         if (e != null) {
                             Node v = e.target;
-                                
+
                             if (!v.visited) {
                                 v.minDistance = u.minDistance + 1;
                                 v.visited = true;
@@ -687,11 +778,11 @@ public class CanvasController implements Initializable, ChangeListener {
 
                                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                                 //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                                if(undirected){
+                                if (undirected) {
                                     StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
                                     ftEdge.setToValue(Color.FORESTGREEN);
                                     st.getChildren().add(ftEdge);
-                                }else if(directed){
+                                } else if (directed) {
                                     FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
                                     ftEdge.setToValue(Color.FORESTGREEN);
                                     st.getChildren().add(ftEdge);
@@ -704,6 +795,15 @@ public class CanvasController implements Initializable, ChangeListener {
                                 });
                                 ft1.onFinishedProperty();
                                 st.getChildren().add(ft1);
+                                str = "\t";                                
+                                str = str.concat("Pushing : Node(" + v.name + ")\n");
+                                final String str1 = str;
+                                FadeTransition fd2 = new FadeTransition(Duration.millis(10),textFlow);
+                                fd2.setOnFinished(ev->{
+                                    textFlow.appendText(str1);
+                                });
+                                fd2.onFinishedProperty();
+                                st.getChildren().add(fd2);
                                 //</editor-fold>
                             }
                         }
@@ -722,14 +822,15 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft1.setToValue(Color.BLACK);
                         ft1.play();
                     }
-                    if(directed)
-                        for(Shape n : edges){
+                    if (directed) {
+                        for (Shape n : edges) {
                             n.setFill(Color.BLACK);
                         }
-                    else if(undirected)
-                        for(Shape n : edges){
+                    } else if (undirected) {
+                        for (Shape n : edges) {
                             n.setStroke(Color.BLACK);
                         }
+                    }
                     FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
                     ft1.setToValue(Color.RED);
                     ft1.play();
@@ -737,13 +838,16 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
+                    textFlow.appendText("---Finished--\n");
                 });
                 st.onFinishedProperty();
                 st.play();
                 playing = true;
                 paused = false;
                 //</editor-fold>
+                
             }
+            
         }
         //</editor-fold>
 
@@ -753,7 +857,7 @@ public class CanvasController implements Initializable, ChangeListener {
         }
 
         class DFS {
-
+            
             DFS(Node source) {
 
                 //<editor-fold defaultstate="collapsed" desc="Animation Setup Distances">
@@ -772,7 +876,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
                 source.minDistance = 0;
                 source.visited = true;
-                DFSRecursion(source);
+                DFSRecursion(source,0);
 
                 //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
                 st.setOnFinished(ev -> {
@@ -781,14 +885,15 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft1.setToValue(Color.BLACK);
                         ft1.play();
                     }
-                    if(directed)
-                        for(Shape n : edges){
+                    if (directed) {
+                        for (Shape n : edges) {
                             n.setFill(Color.BLACK);
                         }
-                    else if(undirected)
-                        for(Shape n : edges){
+                    } else if (undirected) {
+                        for (Shape n : edges) {
                             n.setStroke(Color.BLACK);
                         }
+                    }
                     FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
                     ft1.setToValue(Color.RED);
                     ft1.play();
@@ -796,6 +901,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     playPauseImage.setImage(image);
                     paused = true;
                     playing = false;
+                    textFlow.appendText("---Finished--\n");
                 });
                 st.onFinishedProperty();
                 st.play();
@@ -804,13 +910,24 @@ public class CanvasController implements Initializable, ChangeListener {
                 //</editor-fold>
             }
 
-            public void DFSRecursion(Node source) {
+            public void DFSRecursion(Node source, int level) {
                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                 FillTransition ft = new FillTransition(Duration.millis(time), source.circle);
                 if (source.circle.getFill() == Color.BLACK) {
                     ft.setToValue(Color.FORESTGREEN);
                 }
                 st.getChildren().add(ft);
+                String str = "";
+                for(int i=0; i<level; i++)
+                    str = str.concat("\t");
+                str = str.concat("DFS(" + source.name + ") Enter\n");
+                final String str2 = str;
+                FadeTransition fd = new FadeTransition(Duration.millis(10),textFlow);
+                fd.setOnFinished(e->{
+                    textFlow.appendText(str2);
+                });
+                fd.onFinishedProperty();
+                st.getChildren().add(fd);
                 //</editor-fold>
                 for (Edge e : source.adjacents) {
                     if (e != null) {
@@ -821,24 +938,24 @@ public class CanvasController implements Initializable, ChangeListener {
                             v.previous = source;
 //                        v.circle.distance.setText("Dist. : " + v.minDistance);
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            if(undirected){
+                            if (undirected) {
                                 StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.FORESTGREEN);
                                 st.getChildren().add(ftEdge);
-                            }else if(directed){
+                            } else if (directed) {
                                 FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.FORESTGREEN);
                                 st.getChildren().add(ftEdge);
                             }
                             //</editor-fold>
-                            DFSRecursion(v);
+                            DFSRecursion(v,level+1);
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            if(undirected){
+                            if (undirected) {
                                 StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.BLUEVIOLET);
                                 st.getChildren().add(ftEdge);
-                            }else if(directed){
+                            } else if (directed) {
                                 FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.BLUEVIOLET);
                                 st.getChildren().add(ftEdge);
@@ -855,6 +972,17 @@ public class CanvasController implements Initializable, ChangeListener {
                         }
                     }
                 }
+                str = "";
+                for(int i=0; i<level; i++)
+                    str = str.concat("\t");
+                str = str.concat("DFS(" + source.name + ") Exit\n");
+                final String str1 = str;
+                fd = new FadeTransition(Duration.millis(10),textFlow);
+                fd.setOnFinished(e->{
+                    textFlow.appendText(str1);
+                });
+                fd.onFinishedProperty();
+                st.getChildren().add(fd);
             }
         }
         //</editor-fold>
@@ -908,14 +1036,15 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft1.setToValue(Color.BLACK);
                         ft1.play();
                     }
-                    if(directed)
-                        for(Shape n : edges){
+                    if (directed) {
+                        for (Shape n : edges) {
                             n.setFill(Color.BLACK);
                         }
-                    else if(undirected)
-                        for(Shape n : edges){
+                    } else if (undirected) {
+                        for (Shape n : edges) {
                             n.setStroke(Color.BLACK);
                         }
+                    }
                     for (NodeFX n : circles) {
                         if (n.node.isArticulationPoint) {
                             FillTransition ft1 = new FillTransition(Duration.millis(time), n);
@@ -963,11 +1092,11 @@ public class CanvasController implements Initializable, ChangeListener {
                             v.previous = s;
                             childCount++;
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            if(undirected){
+                            if (undirected) {
                                 StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.FORESTGREEN);
                                 st.getChildren().add(ftEdge);
-                            }else if(directed){
+                            } else if (directed) {
                                 FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.FORESTGREEN);
                                 st.getChildren().add(ftEdge);
@@ -982,11 +1111,11 @@ public class CanvasController implements Initializable, ChangeListener {
 
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             ///<editor-fold defaultstate="collapsed" desc="Change Edge colors">
-                            if(undirected){
+                            if (undirected) {
                                 StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.BLUEVIOLET);
                                 st.getChildren().add(ftEdge);
-                            }else if(directed){
+                            } else if (directed) {
                                 FillTransition ftEdge = new FillTransition(Duration.millis(time), e.line);
                                 ftEdge.setToValue(Color.BLUEVIOLET);
                                 st.getChildren().add(ftEdge);
@@ -1012,17 +1141,17 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         }
         //</editor-fold>
-        
+
         //<editor-fold defaultstate="collapsed" desc="Strongly Connected Components">
-        class StronglyConnectedComponent{
+        class StronglyConnectedComponent {
 
             public StronglyConnectedComponent() {
-                
+
             }
-            
+
         }
         //</editor-fold>
-        
+
         public List<Node> getShortestPathTo(Node target) {
             List<Node> path = new ArrayList<Node>();
             for (Node i = target; i != null; i = i.previous) {
@@ -1032,4 +1161,5 @@ public class CanvasController implements Initializable, ChangeListener {
             return path;
         }
     }
+    
 }
