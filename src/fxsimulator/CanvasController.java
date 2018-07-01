@@ -157,7 +157,7 @@ public class CanvasController implements Initializable, ChangeListener {
         slider.valueProperty().addListener(this);
 
         hiddenRoot.setPrefWidth(200);
-        hiddenRoot.setPrefHeight(580);
+        hiddenRoot.setPrefHeight(581);
         hiddenRoot.setCursor(Cursor.DEFAULT);
 
         //Set Label "Detail"
@@ -170,7 +170,8 @@ public class CanvasController implements Initializable, ChangeListener {
         detailLabel.setLayoutX(35);
 
         //Set TextFlow pane properties
-        textFlow.setPrefSize(hiddenRoot.getPrefWidth(), hiddenRoot.getPrefHeight() - 10);
+        textFlow.setPrefSize(hiddenRoot.getPrefWidth(), hiddenRoot.getPrefHeight() - 2);
+//        textFlow.prefHeightProperty().bind(hiddenRoot.heightProperty());
         textFlow.setStyle("-fx-background-color: #dfe6e9;");
         textFlow.setLayoutY(39);
         textContainer.setLayoutY(textFlow.getLayoutY());
