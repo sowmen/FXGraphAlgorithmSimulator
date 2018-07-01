@@ -357,7 +357,7 @@ public class CanvasController implements Initializable, ChangeListener {
                         }
 
                         calculated = true;
-                    } else if (calculate && calculated && !articulationPoint) {
+                    } else if (calculate && calculated && !articulationPoint & !mst) {
 
                         for (NodeFX n : circles) {
                             n.isSelected = false;
@@ -1217,6 +1217,8 @@ public class CanvasController implements Initializable, ChangeListener {
                 for (NodeFX x : circles) {
                     x.node.previous = x.node;
                 }
+                
+                //<editor-fold defaultstate="collapsed" desc="Detail Information">
                 String init = "Intially : \n";
                 for(NodeFX x : circles){ 
                     final String s = "Node : " + x.node.name + " , Parent: " + x.node.previous.name + "\n";
@@ -1234,7 +1236,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 });
                 fdss.onFinishedProperty();
                 st.getChildren().add(fdss);
-                
+                //</editor-fold>
                 Collections.sort(mstEdges, new Comparator<Edge>() {
                     public int compare(Edge o1, Edge o2) {
                         if (o1.weight == o2.weight) {
@@ -1250,6 +1252,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     ft1.setToValue(Color.DARKORANGE);
                     st.getChildren().add(ft1);
                     
+                    //<editor-fold defaultstate="collapsed" desc="Detail Information">
                     final String se = "Selected Edge:- (" + e.source.name.trim() + "--" + e.target.name.trim()+") Weight: "+ String.valueOf(e.weight) +" \n";
                     FadeTransition fdx = new FadeTransition(Duration.millis(10), textFlow);
                     fdx.setOnFinished(evx -> {
@@ -1273,12 +1276,13 @@ public class CanvasController implements Initializable, ChangeListener {
                     });
                     fdx3.onFinishedProperty();
                     st.getChildren().add(fdx3);
+                    //</editor-fold>
                   
                     if (findParent(e.source.previous) != findParent(e.target.previous)) {
                         unionNode(e.source, e.target);
                         mstValue += e.weight;
                         
-                        
+                        //<editor-fold defaultstate="collapsed" desc="Detail Information">
                         final String sa = "\t---->Unioned\n";
                         final String sa1 = "\t\t->Node :" + e.source.name.trim() + "  Parent: " + findParent(e.source.previous).name.trim() + "\n";
                         final String sa2 = "\t\t->Node :" + e.target.name.trim() + "  Parent: " + findParent(e.target.previous).name.trim() + "\n";
@@ -1313,7 +1317,9 @@ public class CanvasController implements Initializable, ChangeListener {
                         ft3 = new FillTransition(Duration.millis(time), e.target.circle);
                         ft3.setToValue(Color.AQUA);
                         st.getChildren().add(ft3);
+                        //</editor-fold>
                     }else{
+                        //<editor-fold defaultstate="collapsed" desc="Detail Info">
                         final String sa = "\t---->Cycle Detected\n";
                         FadeTransition fdx7 = new FadeTransition(Duration.millis(10), textFlow);
                         fdx7.setOnFinished(evx -> {
@@ -1321,7 +1327,7 @@ public class CanvasController implements Initializable, ChangeListener {
                         });
                         fdx7.onFinishedProperty();
                         st.getChildren().add(fdx7);
-                        
+                        //</editor-fold>
                         StrokeTransition ft2 = new StrokeTransition(Duration.millis(time), e.line);
                         ft2.setToValue(Color.DARKRED);
                         st.getChildren().add(ft2);
