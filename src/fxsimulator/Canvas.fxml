@@ -21,7 +21,7 @@
 <?import jfxtras.scene.layout.VBox?>
 <?import org.controlsfx.control.HiddenSidesPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.CanvasController">
+<AnchorPane fx:id="anchorRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.CanvasController">
    <children>
       <Pane fx:id="border" layoutX="199.0" prefHeight="580.0" prefWidth="702.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <Group fx:id="canvasGroup" layoutX="200.0" layoutY="-3.0" onMouseClicked="#handle" onMouseDragged="#handle" onMouseEntered="#handle" onMouseExited="#handle" onMouseMoved="#handle" onMousePressed="#handle" onMouseReleased="#handle">
@@ -33,11 +33,6 @@
             </Pane>
          </children>
       </Group>
-      <HiddenSidesPane fx:id="hiddenPane" layoutX="200.0" layoutY="-3.0" prefHeight="628.0" prefWidth="701.0" style="-fx-background-color: #E0E0E0;">
-         <cursor>
-            <Cursor fx:constant="CROSSHAIR" />
-         </cursor>
-      </HiddenSidesPane>
       <AnchorPane prefHeight="580.0" prefWidth="200.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <JFXButton fx:id="canvasBackButton" contentDisplay="GRAPHIC_ONLY" prefHeight="30.0" prefWidth="34.0">
@@ -75,7 +70,7 @@
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                </padding>
             </HBox>
-            <GridPane hgap="10.0" layoutX="1.0" layoutY="88.0" prefHeight="244.0" prefWidth="200.0" vgap="5.0">
+            <GridPane hgap="10.0" layoutX="1.0" layoutY="88.0" prefHeight="269.0" prefWidth="200.0" vgap="5.0">
                <columnConstraints>
                   <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
@@ -86,7 +81,7 @@
                   <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
                   <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
                   <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
-                  <RowConstraints maxHeight="25.0" minHeight="5.0" prefHeight="42.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="48.0" valignment="CENTER" />
                </rowConstraints>
                <children>
                   <Label prefHeight="31.0" prefWidth="106.0" text="Algorithms" textFill="#0d0d0d" underline="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -133,6 +128,14 @@
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
+                     <padding>
+                        <Insets right="25.0" />
+                     </padding>
+                  </JFXToggleButton>
+                  <JFXToggleButton fx:id="topSortButton" onAction="#TopSortHandle" prefHeight="45.0" prefWidth="194.0" size="9.0" text="TopSort" toggleColor="#ff5722" toggleGroup="$algoToggleGroup" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="6">
+                     <font>
+                        <Font name="Roboto Light" size="20.0" />
+                     </font>
                      <padding>
                         <Insets right="25.0" />
                      </padding>
@@ -197,5 +200,15 @@
             </JFXNodesList>
          </children>
       </AnchorPane>
+      <HiddenSidesPane fx:id="hiddenPane" layoutX="200.0" layoutY="-3.0" prefHeight="628.0" prefWidth="701.0" style="-fx-background-color: #E0E0E0;" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-3.0">
+         <cursor>
+            <Cursor fx:constant="CROSSHAIR" />
+         </cursor>
+      </HiddenSidesPane>
+      <ImageView fx:id="openHidden" fitHeight="44.0" fitWidth="44.0" layoutX="856.0" layoutY="289.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="287.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="289.0">
+         <image>
+            <Image url="@../res/openHidden.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

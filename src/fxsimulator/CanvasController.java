@@ -70,7 +70,8 @@ public class CanvasController implements Initializable, ChangeListener {
     @FXML
     private JFXButton canvasBackButton, clearButton, resetButton, gear, playPauseButton;
     @FXML
-    private JFXToggleButton addNodeButton, addEdgeButton, bfsButton, dfsButton, dijkstraButton, articulationPointButton, mstButton;
+    private JFXToggleButton addNodeButton, addEdgeButton, bfsButton, dfsButton, topSortButton, dijkstraButton,
+                            articulationPointButton, mstButton;
     @FXML
     private ToggleGroup algoToggleGroup;
     @FXML
@@ -90,7 +91,7 @@ public class CanvasController implements Initializable, ChangeListener {
     @FXML
     private JFXSlider slider = new JFXSlider();
     @FXML
-    private ImageView playPauseImage;
+    private ImageView playPauseImage, openHidden;
 
     int nNode = 0, time = 500;
     NodeFX selectedNode = null, randomStart = null;
@@ -102,7 +103,7 @@ public class CanvasController implements Initializable, ChangeListener {
     List<Label> distances = new ArrayList<Label>(), visitTime = new ArrayList<Label>(), lowTime = new ArrayList<Label>();
     private boolean weighted = Panel1Controller.weighted, unweighted = Panel1Controller.unweighted,
             directed = Panel1Controller.directed, undirected = Panel1Controller.undirected,
-            bfs = true, dfs = true, dijkstra = true, articulationPoint = true, mst = true;
+            bfs = true, dfs = true, dijkstra = true, articulationPoint = true, mst = true, topSortBool = true;
     Algorithm algo = new Algorithm();
     public SequentialTransition st;
 
@@ -163,7 +164,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
         slider.valueProperty().addListener(this);
 
-        hiddenRoot.setPrefWidth(250);
+        hiddenRoot.setPrefWidth(220);
         hiddenRoot.setPrefHeight(581);
 
         hiddenRoot.setCursor(Cursor.DEFAULT);
@@ -219,11 +220,13 @@ public class CanvasController implements Initializable, ChangeListener {
         hiddenPane.setRight(hiddenRoot);
         hiddenRoot.setOnMouseEntered(e -> {
             hiddenPane.setPinnedSide(Side.RIGHT);
+            openHidden.setVisible(false);
             e.consume();
         });
         hiddenRoot.setOnMouseExited(e -> {
             if (!pinned) {
                 hiddenPane.setPinnedSide(null);
+                openHidden.setVisible(true);
             }
             e.consume();
         });
@@ -442,6 +445,7 @@ public class CanvasController implements Initializable, ChangeListener {
         hiddenPane.setPinnedSide(null);
 
         bfsButton.setDisable(true);
+        topSortButton.setDisable(true);
         dfsButton.setDisable(true);
         dijkstraButton.setDisable(true);
         articulationPointButton.setDisable(true);
@@ -505,6 +509,7 @@ public class CanvasController implements Initializable, ChangeListener {
         articulationPoint = false;
         dijkstra = false;
         mst = false;
+        topSortBool = false;
         playing = false;
         paused = false;
     }
@@ -522,6 +527,8 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
+            topSortButton.setDisable(false);
+            topSortButton.setSelected(false);
             if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
@@ -551,6 +558,8 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
+            topSortButton.setDisable(false);
+            topSortButton.setSelected(false);
             if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
@@ -599,7 +608,23 @@ public class CanvasController implements Initializable, ChangeListener {
         mst = false;
         articulationPoint = false;
     }
-
+    @FXML
+    public void TopSortHandle(ActionEvent event){
+        addNode = false;
+        addEdge = false;
+        addNodeButton.setSelected(false);
+        addEdgeButton.setSelected(false);
+        addNodeButton.setDisable(true);
+        addEdgeButton.setDisable(true);
+        calculate = true;
+        clearButton.setDisable(false);
+        dfs = false;
+        bfs = false;
+        dijkstra = false;
+        mst = false;
+        articulationPoint = false;
+        topSortBool = true;
+    }
     @FXML
     public void ArticulationPointHandle(ActionEvent event) {
         addNode = false;
@@ -745,7 +770,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                     ftEdge.setToValue(Color.FORESTGREEN);
                                     st.getChildren().add(ftEdge);
                                 }
-                                //<editor-fold defaultstate="collapsed" desc="Animation Control">
+                                //</editor-fold>
                                 FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                                 ft1.setToValue(Color.FORESTGREEN);
                                 ft1.setOnFinished(ev -> {
@@ -957,7 +982,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
                 source.minDistance = 0;
                 source.visited = true;
-                DFSRecursion(source, 0);
+                TopsortRecursion(source, 0);
                 System.out.println("Hello World " + topSort);
                 String reverse = new StringBuffer(topSort).reverse().toString();
 
@@ -996,7 +1021,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 //</editor-fold>
             }
 
-            public void DFSRecursion(Node source, int level) {
+            public void TopsortRecursion(Node source, int level) {
                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                 FillTransition ft = new FillTransition(Duration.millis(time), source.circle);
                 if (source.circle.getFill() == Color.BLACK) {
@@ -1024,7 +1049,6 @@ public class CanvasController implements Initializable, ChangeListener {
                             v.minDistance = source.minDistance + 1;
                             v.visited = true;
                             v.previous = source;
-//                        v.circle.distance.setText("Dist. : " + v.minDistance);
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
                             if (undirected) {
                                 StrokeTransition ftEdge = new StrokeTransition(Duration.millis(time), e.line);
@@ -1036,7 +1060,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                 st.getChildren().add(ftEdge);
                             }
                             //</editor-fold>
-                            DFSRecursion(v, level + 1);
+                            TopsortRecursion(v, level + 1);
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
                             if (undirected) {
