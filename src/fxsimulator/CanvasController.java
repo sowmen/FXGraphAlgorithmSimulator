@@ -115,6 +115,7 @@ public class CanvasController implements Initializable, ChangeListener {
     public ScrollPane textContainer = new ScrollPane();
 
     public String topSort = "";
+    public int x = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -1331,43 +1332,68 @@ public class CanvasController implements Initializable, ChangeListener {
 
                 source.minDistance = 0;
                 source.visited = true;
-                TopsortRecursion(source, 0);
-                System.out.println("Hello World " + topSort);
-                String reverse = new StringBuffer(topSort).reverse().toString();
+                source.degColor = 0;
+                x = 0;
+                CycleDetection(source, 0);
+                if (x == 1) {
+                    TopsortRecursion(source, 0);
+                    System.out.println("Hello World " + topSort);
+                    String reverse = new StringBuffer(topSort).reverse().toString();
 
-                //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
-                st.setOnFinished(ev -> {
-                    for (NodeFX n : circles) {
-                        FillTransition ft1 = new FillTransition(Duration.millis(time), n);
-                        ft1.setToValue(Color.BLACK);
+                    //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
+                    st.setOnFinished(ev -> {
+                        for (NodeFX n : circles) {
+                            FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                            ft1.setToValue(Color.BLACK);
+                            ft1.play();
+                        }
+                        if (directed) {
+                            for (Shape n : edges) {
+                                n.setFill(Color.BLACK);
+                            }
+                        } else if (undirected) {
+                            for (Shape n : edges) {
+                                n.setStroke(Color.BLACK);
+                            }
+                        }
+                        FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
+                        ft1.setToValue(Color.RED);
                         ft1.play();
-                    }
-                    if (directed) {
-                        for (Shape n : edges) {
-                            n.setFill(Color.BLACK);
-                        }
-                    } else if (undirected) {
-                        for (Shape n : edges) {
-                            n.setStroke(Color.BLACK);
-                        }
-                    }
-                    FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
-                    ft1.setToValue(Color.RED);
-                    ft1.play();
-                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
-                    playPauseImage.setImage(image);
-                    paused = true;
-                    playing = false;
-                    textFlow.appendText("---Finished--\n\n");
-                    textFlow.appendText("Top Sort: " + reverse);
+                        Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                        playPauseImage.setImage(image);
+                        paused = true;
+                        playing = false;
+                        textFlow.appendText("---Finished--\n\n");
+                        textFlow.appendText("Top Sort: " + reverse);
 
-                });
-                st.onFinishedProperty();
-                st.play();
+                    });
+                    st.onFinishedProperty();
+                    st.play();
 
-                playing = true;
-                paused = false;
-                //</editor-fold>
+                    playing = true;
+                    paused = false;
+                    //</editor-fold>
+                } else {
+                    System.out.println("Cycle");
+                    
+                }
+
+            }
+
+            void CycleDetection(Node source, int level) {
+                source.degColor = 1;
+                for (Edge e : source.adjacents) {
+                    if (e != null) {
+                        Node v = e.target;
+                        if (v.degColor == 1) {
+                            x = 1;
+                        } else if (v.degColor == 0) {
+                            v.previous = source;
+                            TopsortRecursion(v, level + 1);
+                        }
+                    }
+                }
+                source.degColor=2;
             }
 
             public void TopsortRecursion(Node source, int level) {
