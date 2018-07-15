@@ -6,19 +6,14 @@
 package fxsimulator;
 
 import fxsimulator.CanvasController.NodeFX;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
 
 /**
  *
- * @author sowme
+ * @author sowmen
  */
 public class RightClickMenu {
 
@@ -44,6 +39,10 @@ public class RightClickMenu {
         menu.setOpacity(0.9);
     }
 
+    /**
+     * Constructor for the context menu on node
+     * @param node 
+     */
     public RightClickMenu(NodeFX node) {
         this();
         sourceNode = node;
@@ -54,7 +53,11 @@ public class RightClickMenu {
             Panel1Controller.cref.changeID(node);
         });
     }
-
+    
+    /**
+     * Constructor for the context menu on edge
+     * @param edge 
+     */
     public RightClickMenu(Edge edge) {
         this();
         sourceEdge = edge;

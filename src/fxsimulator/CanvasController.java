@@ -242,9 +242,10 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Change Listener for change in speed slider values.
+     *
      * @param observable
      * @param oldValue
-     * @param newValue 
+     * @param newValue
      */
     @Override
     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -266,9 +267,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Handles events for mouse clicks on the canvas.
-     * Adds a new node on the drawing canvas where mouse is clicked.
-     * @param ev 
+     * Handles events for mouse clicks on the canvas. Adds a new node on the
+     * drawing canvas where mouse is clicked.
+     *
+     * @param ev
      */
     @FXML
     public void handle(MouseEvent ev) {
@@ -310,7 +312,9 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Checks if an edge already exists between two nodes before adding a new edge.
+     * Checks if an edge already exists between two nodes before adding a new
+     * edge.
+     *
      * @param u = selected node
      * @param v = second selected node
      * @return True if edge already exists. Else false.
@@ -325,8 +329,8 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Adds an edge between two selected nodes.
-     * Handles events for mouse clicks on a node.
+     * Adds an edge between two selected nodes. Handles events for mouse clicks
+     * on a node.
      */
     EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 
@@ -474,6 +478,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Get a random node to start Articulation Point.
+     *
      * @return A node from the current node list.
      */
     private Node getRandomStart() {
@@ -482,7 +487,8 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Event handler for the Play/Pause button.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     public void PlayPauseHandle(ActionEvent event) {
@@ -507,9 +513,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Event handler for the Reset button.
-     * Clears all the lists and empties the canvas.
-     * @param event 
+     * Event handler for the Reset button. Clears all the lists and empties the
+     * canvas.
+     *
+     * @param event
      */
     @FXML
     public void ResetHandle(ActionEvent event) {
@@ -547,9 +554,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Event handler for the Clear button.
-     * Re-initiates the distance and node values and labels.
-     * @param event 
+     * Event handler for the Clear button. Re-initiates the distance and node
+     * values and labels.
+     *
+     * @param event
      */
     @FXML
     public void ClearHandle(ActionEvent event) {
@@ -597,9 +605,9 @@ public class CanvasController implements Initializable, ChangeListener {
         Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
         playPauseImage.setImage(image);
 
-        distances = new ArrayList<Label>();
-        visitTime = new ArrayList<Label>();
-        lowTime = new ArrayList<Label>();
+        distances = new ArrayList<>();
+        visitTime = new ArrayList<>();
+        lowTime = new ArrayList<>();
         addNodeButton.setDisable(false);
         addEdgeButton.setDisable(false);
         AddNodeHandle(null);
@@ -613,10 +621,10 @@ public class CanvasController implements Initializable, ChangeListener {
         paused = false;
     }
 
-    
     /**
      * Event handler for the Add Edge button.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     public void AddEdgeHandle(ActionEvent event) {
@@ -631,11 +639,12 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
-            topSortButton.setDisable(false);
-            topSortButton.setSelected(false);
             if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
+            } else if(directed){
+                topSortButton.setDisable(false);
+                topSortButton.setSelected(false);
             }
         }
         if (weighted) {
@@ -662,11 +671,12 @@ public class CanvasController implements Initializable, ChangeListener {
             bfsButton.setSelected(false);
             dfsButton.setDisable(false);
             dfsButton.setSelected(false);
-            topSortButton.setDisable(false);
-            topSortButton.setSelected(false);
             if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
+            } else if(directed) {
+                topSortButton.setDisable(false);
+                topSortButton.setSelected(false);
             }
         }
         if (weighted) {
@@ -729,6 +739,7 @@ public class CanvasController implements Initializable, ChangeListener {
         mst = false;
         articulationPoint = false;
         topSortBool = true;
+        algo.newTopSort(getRandomStart());
     }
 
     @FXML
@@ -785,7 +796,8 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Changes the current Name/ID of a node. 
+     * Changes the current Name/ID of a node.
+     *
      * @param source Node reference of selected node
      */
     public void changeID(NodeFX source) {
@@ -823,7 +835,8 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Deletes the currently selected node.
-     * @param sourceFX 
+     *
+     * @param sourceFX
      */
     public void deleteNode(NodeFX sourceFX) {
         selectedNode = null;
@@ -889,7 +902,8 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Deletes the currently selected Edge.
-     * @param sourceEdge 
+     *
+     * @param sourceEdge
      */
     public void deleteEdge(Edge sourceEdge) {
         System.out.println("Before-------");
@@ -933,9 +947,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Change weight of the currently selected edge.
-     * Disabled for unweighted graphs.
-     * @param sourceEdge 
+     * Change weight of the currently selected edge. Disabled for unweighted
+     * graphs.
+     *
+     * @param sourceEdge
      */
     public void changeWeight(Edge sourceEdge) {
         System.out.println("Before-------");
