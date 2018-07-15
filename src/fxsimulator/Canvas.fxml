@@ -24,9 +24,9 @@
 <AnchorPane fx:id="anchorRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.CanvasController">
    <children>
       <Pane fx:id="border" layoutX="199.0" prefHeight="580.0" prefWidth="702.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Group fx:id="canvasGroup" layoutX="200.0" layoutY="-3.0" onMouseClicked="#handle" onMouseDragged="#handle" onMouseEntered="#handle" onMouseExited="#handle" onMouseMoved="#handle" onMousePressed="#handle" onMouseReleased="#handle">
+      <Group fx:id="canvasGroup" layoutX="200.0" layoutY="-3.0" onMouseClicked="#handle" onMouseDragged="#handle" onMousePressed="#handle" onMouseReleased="#handle">
          <children>
-            <Pane fx:id="viewer" onMouseClicked="#handle" onMouseDragged="#handle" onMouseEntered="#handle" onMouseExited="#handle" onMouseMoved="#handle" onMousePressed="#handle" onMouseReleased="#handle" prefHeight="627.0" prefWidth="702.0" style="-fx-background-color: #E0E0E0;">
+            <Pane fx:id="viewer" onMouseClicked="#handle" onMouseDragged="#handle" onMousePressed="#handle" onMouseReleased="#handle" prefHeight="627.0" prefWidth="702.0" style="-fx-background-color: #E0E0E0;">
                <cursor>
                   <Cursor fx:constant="CROSSHAIR" />
                </cursor>
