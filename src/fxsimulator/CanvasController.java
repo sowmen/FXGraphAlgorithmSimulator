@@ -115,6 +115,7 @@ public class CanvasController implements Initializable, ChangeListener {
     public ScrollPane textContainer = new ScrollPane();
 
     public String topSort = "";
+    public int x = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -242,9 +243,10 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Change Listener for change in speed slider values.
+     *
      * @param observable
      * @param oldValue
-     * @param newValue 
+     * @param newValue
      */
     @Override
     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -266,9 +268,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Handles events for mouse clicks on the canvas.
-     * Adds a new node on the drawing canvas where mouse is clicked.
-     * @param ev 
+     * Handles events for mouse clicks on the canvas. Adds a new node on the
+     * drawing canvas where mouse is clicked.
+     *
+     * @param ev
      */
     @FXML
     public void handle(MouseEvent ev) {
@@ -310,7 +313,9 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Checks if an edge already exists between two nodes before adding a new edge.
+     * Checks if an edge already exists between two nodes before adding a new
+     * edge.
+     *
      * @param u = selected node
      * @param v = second selected node
      * @return True if edge already exists. Else false.
@@ -325,8 +330,8 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Adds an edge between two selected nodes.
-     * Handles events for mouse clicks on a node.
+     * Adds an edge between two selected nodes. Handles events for mouse clicks
+     * on a node.
      */
     EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 
@@ -474,6 +479,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Get a random node to start Articulation Point.
+     *
      * @return A node from the current node list.
      */
     private Node getRandomStart() {
@@ -482,7 +488,8 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Event handler for the Play/Pause button.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     public void PlayPauseHandle(ActionEvent event) {
@@ -507,9 +514,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Event handler for the Reset button.
-     * Clears all the lists and empties the canvas.
-     * @param event 
+     * Event handler for the Reset button. Clears all the lists and empties the
+     * canvas.
+     *
+     * @param event
      */
     @FXML
     public void ResetHandle(ActionEvent event) {
@@ -547,9 +555,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Event handler for the Clear button.
-     * Re-initiates the distance and node values and labels.
-     * @param event 
+     * Event handler for the Clear button. Re-initiates the distance and node
+     * values and labels.
+     *
+     * @param event
      */
     @FXML
     public void ClearHandle(ActionEvent event) {
@@ -613,10 +622,10 @@ public class CanvasController implements Initializable, ChangeListener {
         paused = false;
     }
 
-    
     /**
      * Event handler for the Add Edge button.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     public void AddEdgeHandle(ActionEvent event) {
@@ -785,7 +794,8 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Changes the current Name/ID of a node. 
+     * Changes the current Name/ID of a node.
+     *
      * @param source Node reference of selected node
      */
     public void changeID(NodeFX source) {
@@ -823,7 +833,8 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Deletes the currently selected node.
-     * @param sourceFX 
+     *
+     * @param sourceFX
      */
     public void deleteNode(NodeFX sourceFX) {
         selectedNode = null;
@@ -889,7 +900,8 @@ public class CanvasController implements Initializable, ChangeListener {
 
     /**
      * Deletes the currently selected Edge.
-     * @param sourceEdge 
+     *
+     * @param sourceEdge
      */
     public void deleteEdge(Edge sourceEdge) {
         System.out.println("Before-------");
@@ -933,9 +945,10 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /**
-     * Change weight of the currently selected edge.
-     * Disabled for unweighted graphs.
-     * @param sourceEdge 
+     * Change weight of the currently selected edge. Disabled for unweighted
+     * graphs.
+     *
+     * @param sourceEdge
      */
     public void changeWeight(Edge sourceEdge) {
         System.out.println("Before-------");
@@ -1316,43 +1329,68 @@ public class CanvasController implements Initializable, ChangeListener {
 
                 source.minDistance = 0;
                 source.visited = true;
-                TopsortRecursion(source, 0);
-                System.out.println("Hello World " + topSort);
-                String reverse = new StringBuffer(topSort).reverse().toString();
+                source.degColor = 0;
+                x = 0;
+                CycleDetection(source, 0);
+                if (x == 1) {
+                    TopsortRecursion(source, 0);
+                    System.out.println("Hello World " + topSort);
+                    String reverse = new StringBuffer(topSort).reverse().toString();
 
-                //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
-                st.setOnFinished(ev -> {
-                    for (NodeFX n : circles) {
-                        FillTransition ft1 = new FillTransition(Duration.millis(time), n);
-                        ft1.setToValue(Color.BLACK);
+                    //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
+                    st.setOnFinished(ev -> {
+                        for (NodeFX n : circles) {
+                            FillTransition ft1 = new FillTransition(Duration.millis(time), n);
+                            ft1.setToValue(Color.BLACK);
+                            ft1.play();
+                        }
+                        if (directed) {
+                            for (Shape n : edges) {
+                                n.setFill(Color.BLACK);
+                            }
+                        } else if (undirected) {
+                            for (Shape n : edges) {
+                                n.setStroke(Color.BLACK);
+                            }
+                        }
+                        FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
+                        ft1.setToValue(Color.RED);
                         ft1.play();
-                    }
-                    if (directed) {
-                        for (Shape n : edges) {
-                            n.setFill(Color.BLACK);
-                        }
-                    } else if (undirected) {
-                        for (Shape n : edges) {
-                            n.setStroke(Color.BLACK);
-                        }
-                    }
-                    FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
-                    ft1.setToValue(Color.RED);
-                    ft1.play();
-                    Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
-                    playPauseImage.setImage(image);
-                    paused = true;
-                    playing = false;
-                    textFlow.appendText("---Finished--\n\n");
-                    textFlow.appendText("Top Sort: " + reverse);
+                        Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                        playPauseImage.setImage(image);
+                        paused = true;
+                        playing = false;
+                        textFlow.appendText("---Finished--\n\n");
+                        textFlow.appendText("Top Sort: " + reverse);
 
-                });
-                st.onFinishedProperty();
-                st.play();
+                    });
+                    st.onFinishedProperty();
+                    st.play();
 
-                playing = true;
-                paused = false;
-                //</editor-fold>
+                    playing = true;
+                    paused = false;
+                    //</editor-fold>
+                } else {
+                    System.out.println("Cycle");
+                    
+                }
+
+            }
+
+            void CycleDetection(Node source, int level) {
+                source.degColor = 1;
+                for (Edge e : source.adjacents) {
+                    if (e != null) {
+                        Node v = e.target;
+                        if (v.degColor == 1) {
+                            x = 1;
+                        } else if (v.degColor == 0) {
+                            v.previous = source;
+                            TopsortRecursion(v, level + 1);
+                        }
+                    }
+                }
+                source.degColor=2;
             }
 
             public void TopsortRecursion(Node source, int level) {

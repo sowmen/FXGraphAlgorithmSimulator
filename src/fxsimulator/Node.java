@@ -22,7 +22,8 @@ public class Node implements Comparable<Node> {
     public double minDistance = Double.POSITIVE_INFINITY;
     public boolean visited, isArticulationPoint;
     public int visitTime = 0, lowTime = 0;
-
+    public int degColor;
+    
     public Node(String argName) {
         name = argName;
         visited = false;
