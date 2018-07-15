@@ -66,15 +66,6 @@ public class RightClickMenu {
         });
     }
 
-//    public RightClickMenu(Arrow line, Edge edge) {
-//        this();
-//        sourceEdge = edge;
-//        sourceArrow = line;
-//        delete.setOnAction(e -> {
-//            new CanvasController().deleteArrow(sourceArrow);
-//        });
-//    }
-
     public ContextMenu getMenu() {
         return menu;
     }

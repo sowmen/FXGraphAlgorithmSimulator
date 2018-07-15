@@ -1,10 +1,12 @@
+
 /*******************************************************************************
  *                                                                             *
- * Scroll Bar			                                                       *
+ * Scroll Bar			                                                       
  *                                                                             *
  ******************************************************************************/
 
-.scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
+
+/*.scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
     -fx-background-color: #F1F1F1;
     -fx-background-insets: 0.0;
 }
@@ -15,12 +17,13 @@
     -fx-background-radius: 1.0;
 }
 
-/* Up- and Down-Button Padding */
+ Up- and Down-Button Padding 
+
 .scroll-bar:vertical > .increment-button, .scroll-bar:vertical > .decrement-button {
     -fx-padding: 5 2 5 2;
 }
 
-/* Left- and Right-Button Padding */
+ Left- and Right-Button Padding 
 .scroll-bar:horizontal > .increment-button, .scroll-bar:horizontal > .decrement-button {
     -fx-padding: 2 5 2 5;
 }
@@ -33,31 +36,31 @@
     -fx-background-color: rgb(150.0, 150.0, 150.0);
 }
 
-/* Up Arrow */
+ Up Arrow 
 .scroll-bar:vertical > .increment-button > .increment-arrow {
     -fx-shape: "M298 426h428l-214 214z";
 }
 
-/* Down Arrow */
+ Down Arrow 
 .scroll-bar:vertical > .decrement-button > .decrement-arrow {
     -fx-shape: "M298 598l214-214 214 214h-428z";
 }
 
-/* Right Arrow */    
+ Right Arrow     
 .scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-shape: "M0 428l0 -428l214 214l-214 214z";
 }
 
-/* Left Arrow */
+ Left Arrow 
 .scroll-bar:horizontal > .decrement-button > .decrement-arrow {
     -fx-shape: "M214 0l0 428l-214 -214l214 -214z";
 }
 
-/*******************************************************************************
+******************************************************************************
  *                                                                             *
  * Scroll Pane			                                                       *
  *                                                                             *
- ******************************************************************************/
+ *****************************************************************************
 
 .scroll-pane {
     -fx-background-insets: 0;
@@ -71,8 +74,9 @@
 
 .scroll-pane .corner {
     -fx-background-insets: 0;
-}
+}*/
 
+/*************************************************************/
 #node {
     -fx-cursor: default;
 }
@@ -117,6 +121,176 @@
     -fx-text-fill: #fff;
 }
 
-.button{
-    
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2015 - AGIX | Innovative Engineering
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT 	SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *                                                                              
+ */
+
+/*
+ *   This is a Material Design CSS for JavaFX
+ */
+
+/*******************************************************************************
+ *                                                                             *
+ * Root					 				                       				   *
+ *                                                                             *
+ ******************************************************************************/
+.root {
+	/* Swatch Colors - Blue*/
+	-swatch-100: #BBDEFB;
+	-swatch-200: #90CAF9;
+	-swatch-300: #64BEF6;
+	-swatch-400: #42A5F5;
+	-swatch-500: #2196F3;
+	/*default text */
+	-fx-text-base-color: #424141;
+	-fx-text-button-normal: -swatch-500;
+	-fx-text-button-colored: rgb(255.0, 255.0, 255.0);
+	-fx-text-button-text: rgb(100.0, 100.0, 100.0);
+	-fx-text-title-color: rgb(45.0, 45.0, 45.0);
+	-fx-text-subtitle-color: rgb(65.0, 65.0, 65.0);
+	-fx-text-control-title-color: rgb(130.0, 130.0, 130.0);
+	-fx-text-fill: -fx-text-base-color;
+	-dark: rgb(47.0, 52.0, 57.0);
+	-fx-background-color: -dark;
+	/*default font */
+	-fx-font-family: 'Roboto Medium';
+	-fx-font-size: 12.0px;
+	-fx-disabled-opacity: 0.6;
+	/*default colors */
+	-swatch-grey: rgb(200.0, 200.0, 200.0);
+	-swatch-dark-grey: rgb(150.0, 150.0, 150.0);
+	-swatch-light-grey: rgb(230.0, 230.0, 230.0);
+	-swatch-toolbar: rgb(245.0, 245.0, 245.0);
+	-swatch-toolbar-selected: rgb(215.0, 215.0, 215.0);
+	/* 
+     Modena colors
+     */
+	-fx-dark-text-color: white; /* Text color when selected*/
+	-fx-mid-text-color: -fx-text-base-color;
+	-fx-light-text-color: -swatch-light-grey;
+	-fx-body-color: white;
+	/* A bright blue for the focus indicator of objects. Typically used as the
+     * first color in -fx-background-color for the "focused" pseudo-class. Also
+     * typically used with insets of -1.4 to provide a glowing effect.
+     */
+	-fx-focus-color: -swatch-400;
+	-fx-faint-focus-color: -swatch-200;
+	/* A bright blue for highlighting/accenting objects.  For example: selected
+     * text; selected items in menus, lists, trees, and tables; progress bars */
+	-fx-accent: -swatch-400;
+	-fx-dark-text-color: white;
+}
+
+******************************************************************************
+ *                                                                             *
+ * Button & ToggleButton                                                       *
+ *                                                                             *
+ *****************************************************************************
+
+/*#spec:focused:selected {
+	-fx-background-color: derive(-swatch-500, 50.0%),
+		derive(-swatch-500, -20.0%);
+	-fx-background-insets: 0.0, 0.2em;
+        -fx-effect: default;
+	-fx-text-fill: -fx-text-button-colored;
+}*/
+
+/*#spec:armed, #spec:selected, .button:armed, .button:default:armed {
+	-fx-background-color: -swatch-grey;
+	-fx-text-fill: -fx-text-button-colored;
+}*/
+
+/*******************************************************************************
+ *                                                                             *
+ * Scroll Bar			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+.scroll-bar:vertical>.track-background, .scroll-bar:horizontal>.track-background
+	{
+	-fx-background-color: -swatch-light-grey;
+	-fx-background-insets: 0.0;
+}
+
+.scroll-bar:vertical>.thumb, .scroll-bar:horizontal>.thumb {
+	-fx-background-color: -swatch-grey;
+	-fx-background-insets: 0.0;
+	-fx-background-radius: 4.0;
+}
+
+.scroll-bar>.increment-button, .scroll-bar>.decrement-button,
+	.scroll-bar:hover>.increment-button, .scroll-bar:hover>.decrement-button
+	{
+	-fx-background-color: transparent;
+}
+
+.scroll-bar>.increment-button>.increment-arrow, .scroll-bar>.decrement-button>.decrement-arrow
+	{
+	-fx-background-color: -swatch-dark-grey;
+}
+
+.scroll-bar>.track-background {
+	-fx-background-color: transparent;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text, Text field & Text area                                                *
+ *                                                                             *
+ ******************************************************************************/
+.text {
+	-fx-font-smoothing-type: gray;
+}
+
+.text-area, .text-field {
+	-fx-background-color: transparent;
+	-fx-background-radius: 2.0;
+	-fx-padding: 0.5em 0.5em 0.5em 0.1em;
+	-fx-border-color: -swatch-grey;
+	-fx-border-width: 0 0 2 0;
+	-fx-prompt-text-fill: derive(-dark, 50.0%);
+	-fx-highlight-fill: rgb(94.0, 203.0, 234.0);
+}
+
+.text-area .text, .text-field>*>.text {
+	-fx-effect: null;
+	-fx-fill: -dark;
+}
+
+.text-area {
+	-fx-padding: 0.15em;
+}
+
+.text-area .content {
+	-fx-padding: 0.7em;
+	-fx-border-width: 0.0;
+	-fx-background-color: transparent;
+}
+
+.text-area:focused  .content {
+	-fx-background-color: transparent;
+}
+
+.text-area:focused, .text-field:focused {
+	-fx-border-color: -swatch-500;
 }

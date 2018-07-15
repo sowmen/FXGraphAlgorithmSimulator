@@ -33,6 +33,16 @@
             </Pane>
          </children>
       </Group>
+      <HiddenSidesPane fx:id="hiddenPane" layoutX="200.0" layoutY="-3.0" prefHeight="628.0" prefWidth="701.0" style="-fx-background-color: #E0E0E0;" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-3.0">
+         <cursor>
+            <Cursor fx:constant="CROSSHAIR" />
+         </cursor>
+      </HiddenSidesPane>
+      <ImageView fx:id="openHidden" fitHeight="44.0" fitWidth="44.0" layoutX="856.0" layoutY="289.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="287.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="289.0">
+         <image>
+            <Image url="@../res/openHidden.png" />
+         </image>
+      </ImageView>
       <AnchorPane prefHeight="580.0" prefWidth="200.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <JFXButton fx:id="canvasBackButton" contentDisplay="GRAPHIC_ONLY" prefHeight="30.0" prefWidth="34.0">
@@ -92,7 +102,7 @@
                         <Insets bottom="10.0" />
                      </GridPane.margin>
                   </Label>
-                  <JFXToggleButton fx:id="bfsButton" alignment="BASELINE_CENTER" onAction="#BFSHandle" prefHeight="59.0" prefWidth="132.0" size="9.0" text="BFS" toggleColor="#ff5722" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="1">
+                  <JFXToggleButton id="spec" fx:id="bfsButton" alignment="BASELINE_CENTER" onAction="#BFSHandle" prefHeight="59.0" prefWidth="132.0" size="9.0" text="BFS" toggleColor="#ff5722" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="1">
                      <font>
                         <Font name="Roboto Light" size="20.0" />
                      </font>
@@ -200,15 +210,5 @@
             </JFXNodesList>
          </children>
       </AnchorPane>
-      <HiddenSidesPane fx:id="hiddenPane" layoutX="200.0" layoutY="-3.0" prefHeight="628.0" prefWidth="701.0" style="-fx-background-color: #E0E0E0;" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-3.0">
-         <cursor>
-            <Cursor fx:constant="CROSSHAIR" />
-         </cursor>
-      </HiddenSidesPane>
-      <ImageView fx:id="openHidden" fitHeight="44.0" fitWidth="44.0" layoutX="856.0" layoutY="289.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="287.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="289.0">
-         <image>
-            <Image url="@../res/openHidden.png" />
-         </image>
-      </ImageView>
    </children>
 </AnchorPane>

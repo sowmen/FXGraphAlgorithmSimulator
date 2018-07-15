@@ -64,6 +64,8 @@ public class CanvasController implements Initializable, ChangeListener {
     @FXML
     private HiddenSidesPane hiddenPane;
     @FXML
+    private AnchorPane anchorRoot;
+    @FXML
     private JFXButton canvasBackButton, clearButton, resetButton, playPauseButton;
     @FXML
     private JFXToggleButton addNodeButton, addEdgeButton, bfsButton, dfsButton, topSortButton, dijkstraButton,
@@ -164,7 +166,8 @@ public class CanvasController implements Initializable, ChangeListener {
         nodeList.addAnimatedNode(slider);
         nodeList.setSpacing(50D);
         nodeList.setRotate(270D);
-
+        slider.toFront();
+        nodeList.toFront();
         slider.valueProperty().addListener(this);
 
         hiddenRoot.setPrefWidth(220);
@@ -237,7 +240,12 @@ public class CanvasController implements Initializable, ChangeListener {
 
     }
 
-    //Listens change in the slider
+    /**
+     * Change Listener for change in speed slider values.
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
     @Override
     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
         int temp = (int) slider.getValue();
@@ -257,11 +265,17 @@ public class CanvasController implements Initializable, ChangeListener {
         System.out.println(time);
     }
 
-    //Adds new node when clicked on empty canvas
+    /**
+     * Handles events for mouse clicks on the canvas.
+     * Adds a new node on the drawing canvas where mouse is clicked.
+     * @param ev 
+     */
     @FXML
     public void handle(MouseEvent ev) {
         if (addNode) {
-            if(nNode == 1) addNodeButton.setDisable(false);
+            if (nNode == 1) {
+                addNodeButton.setDisable(false);
+            }
             if (nNode == 2) {
                 addEdgeButton.setDisable(false);
                 AddNodeHandle(null);
@@ -294,15 +308,26 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         }
     }
-    
+
+    /**
+     * Checks if an edge already exists between two nodes before adding a new edge.
+     * @param u = selected node
+     * @param v = second selected node
+     * @return True if edge already exists. Else false.
+     */
     boolean edgeExists(NodeFX u, NodeFX v) {
-        for(Edge e: realEdges){
-            if(e.source == u.node && e.target == v.node)
+        for (Edge e : realEdges) {
+            if (e.source == u.node && e.target == v.node) {
                 return true;
+            }
         }
         return false;
     }
-    //Selects a node when clicked on a node and performs action
+
+    /**
+     * Adds an edge between two selected nodes.
+     * Handles events for mouse clicks on a node.
+     */
     EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 
         @Override
@@ -312,7 +337,7 @@ public class CanvasController implements Initializable, ChangeListener {
 
                 if (!circle.isSelected) {
                     if (selectedNode != null) {
-                        if (addEdge && !edgeExists(selectedNode,circle)) {
+                        if (addEdge && !edgeExists(selectedNode, circle)) {
                             weight = new Label();
                             System.out.println("Adding Edge");
                             //Adds the edge between two selected nodes
@@ -353,14 +378,14 @@ public class CanvasController implements Initializable, ChangeListener {
                                 if (weighted) {
                                     mstEdges.add(temp);
                                 }
-                                
+
                                 selectedNode.node.adjacents.add(new Edge(selectedNode.node, circle.node, Double.valueOf(weight.getText()), edgeLine, weight));
                                 circle.node.adjacents.add(new Edge(circle.node, selectedNode.node, Double.valueOf(weight.getText()), edgeLine, weight));
                                 edges.add(edgeLine);
-                                realEdges.add(selectedNode.node.adjacents.get(selectedNode.node.adjacents.size()-1));
-                                realEdges.add(circle.node.adjacents.get(circle.node.adjacents.size()-1));
+                                realEdges.add(selectedNode.node.adjacents.get(selectedNode.node.adjacents.size() - 1));
+                                realEdges.add(circle.node.adjacents.get(circle.node.adjacents.size() - 1));
                                 line_arrow = edgeLine;
-                                
+
                             } else if (directed) {
                                 temp = new Edge(selectedNode.node, circle.node, Double.valueOf(weight.getText()), arrow, weight);
                                 selectedNode.node.adjacents.add(temp);
@@ -369,17 +394,18 @@ public class CanvasController implements Initializable, ChangeListener {
                                 line_arrow = arrow;
                                 realEdges.add(temp);
                             }
-                            
+
                             RightClickMenu rt = new RightClickMenu(temp);
                             ContextMenu menu = rt.getMenu();
-                            if(weighted){
+                            if (weighted) {
                                 rt.changeId.setText("Change Weight");
+                            } else if (unweighted) {
+                                rt.changeId.setDisable(true);
                             }
-                            else if(unweighted) rt.changeId.setDisable(true);
                             final Shape la = line_arrow;
                             line_arrow.setOnContextMenuRequested(e -> {
                                 System.out.println("In Edge Menu :" + menuBool);
-                                
+
                                 if (menuBool == true) {
                                     globalMenu.hide();
                                     menuBool = false;
@@ -390,7 +416,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                     menuBool = true;
                                 }
                             });
-                            menu.setOnAction(e->{
+                            menu.setOnAction(e -> {
                                 menuBool = false;
                             });
                         }
@@ -445,11 +471,19 @@ public class CanvasController implements Initializable, ChangeListener {
         }
 
     };
-    
+
+    /**
+     * Get a random node to start Articulation Point.
+     * @return A node from the current node list.
+     */
     private Node getRandomStart() {
         return circles.get(0).node;
     }
-    
+
+    /**
+     * Event handler for the Play/Pause button.
+     * @param event 
+     */
     @FXML
     public void PlayPauseHandle(ActionEvent event) {
         System.out.println("IN PLAYPAUSE");
@@ -472,6 +506,11 @@ public class CanvasController implements Initializable, ChangeListener {
         }
     }
 
+    /**
+     * Event handler for the Reset button.
+     * Clears all the lists and empties the canvas.
+     * @param event 
+     */
     @FXML
     public void ResetHandle(ActionEvent event) {
         ClearHandle(null);
@@ -507,6 +546,11 @@ public class CanvasController implements Initializable, ChangeListener {
         paused = false;
     }
 
+    /**
+     * Event handler for the Clear button.
+     * Re-initiates the distance and node values and labels.
+     * @param event 
+     */
     @FXML
     public void ClearHandle(ActionEvent event) {
         menuBool = false;
@@ -569,6 +613,11 @@ public class CanvasController implements Initializable, ChangeListener {
         paused = false;
     }
 
+    
+    /**
+     * Event handler for the Add Edge button.
+     * @param event 
+     */
     @FXML
     public void AddEdgeHandle(ActionEvent event) {
         addNode = false;
@@ -734,8 +783,12 @@ public class CanvasController implements Initializable, ChangeListener {
         mst = true;
         algo.newMST();
     }
-    
-    public void changeID(NodeFX source){
+
+    /**
+     * Changes the current Name/ID of a node. 
+     * @param source Node reference of selected node
+     */
+    public void changeID(NodeFX source) {
         System.out.println("Before-------");
         for (NodeFX u : circles) {
             System.out.println(u.node.name + " - ");
@@ -744,21 +797,21 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         }
         selectedNode = null;
-        
+
         TextInputDialog dialog = new TextInputDialog(Integer.toString(nNode));
         dialog.setTitle(null);
         dialog.setHeaderText("Enter Node ID :");
         dialog.setContentText(null);
-        
+
         String res = null;
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             res = result.get();
         }
-        
+
         circles.get(circles.indexOf(source)).id.setText(res);
         circles.get(circles.indexOf(source)).node.name = res;
-        
+
         System.out.println("AFTER----------");
         for (NodeFX u : circles) {
             System.out.println(u.node.name + " - ");
@@ -767,7 +820,11 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         }
     }
-    
+
+    /**
+     * Deletes the currently selected node.
+     * @param sourceFX 
+     */
     public void deleteNode(NodeFX sourceFX) {
         selectedNode = null;
         System.out.println("Before-------");
@@ -812,14 +869,13 @@ public class CanvasController implements Initializable, ChangeListener {
                 }
             }
         }
-        for(Node z : tempNodes2){
+        for (Node z : tempNodes2) {
             z.adjacents.removeAll(tempEdges2);
         }
         realEdges.removeAll(tempEdges);
         realEdges.removeAll(tempEdges2);
         canvasGroup.getChildren().remove(sourceFX.id);
         canvasGroup.getChildren().remove(sourceFX);
-        
 
         System.out.println("AFTER----------");
         for (NodeFX u : circles) {
@@ -831,6 +887,10 @@ public class CanvasController implements Initializable, ChangeListener {
 
     }
 
+    /**
+     * Deletes the currently selected Edge.
+     * @param sourceEdge 
+     */
     public void deleteEdge(Edge sourceEdge) {
         System.out.println("Before-------");
         for (NodeFX u : circles) {
@@ -839,18 +899,18 @@ public class CanvasController implements Initializable, ChangeListener {
                 System.out.println(v.source.name + " " + v.target.name);
             }
         }
-        
+
         System.out.println(sourceEdge.source.name + " -- " + sourceEdge.target.name);
         List<Edge> ls1 = new ArrayList<>();
         List<Shape> lshape2 = new ArrayList<>();
-        for(Edge e : sourceEdge.source.adjacents){
-            if(e.target == sourceEdge.target){
+        for (Edge e : sourceEdge.source.adjacents) {
+            if (e.target == sourceEdge.target) {
                 ls1.add(e);
                 lshape2.add(e.line);
             }
         }
-        for(Edge e : sourceEdge.target.adjacents){
-            if(e.target == sourceEdge.source){
+        for (Edge e : sourceEdge.target.adjacents) {
+            if (e.target == sourceEdge.source) {
                 ls1.add(e);
                 lshape2.add(e.line);
             }
@@ -859,11 +919,11 @@ public class CanvasController implements Initializable, ChangeListener {
         sourceEdge.source.adjacents.removeAll(ls1);
         sourceEdge.target.adjacents.removeAll(ls1);
         realEdges.removeAll(ls1);
-        
+
         edges.removeAll(lshape2);
         canvasGroup.getChildren().removeAll(lshape2);
-        
-         System.out.println("AFTER----------");
+
+        System.out.println("AFTER----------");
         for (NodeFX p : circles) {
             System.out.println(p.node.name + " - ");
             for (Edge q : p.node.adjacents) {
@@ -871,7 +931,12 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         }
     }
-    
+
+    /**
+     * Change weight of the currently selected edge.
+     * Disabled for unweighted graphs.
+     * @param sourceEdge 
+     */
     public void changeWeight(Edge sourceEdge) {
         System.out.println("Before-------");
         for (NodeFX u : circles) {
@@ -880,33 +945,35 @@ public class CanvasController implements Initializable, ChangeListener {
                 System.out.println(v.source.name + " " + v.target.name + " weight: " + v.weight);
             }
         }
-        
+
         TextInputDialog dialog = new TextInputDialog("0");
         dialog.setTitle(null);
         dialog.setHeaderText("Enter Weight of the Edge :");
         dialog.setContentText(null);
-        
+
         String res = null;
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             res = result.get();
         }
-        
-        for(Edge e : sourceEdge.source.adjacents){
-            if(e.target == sourceEdge.target){
+
+        for (Edge e : sourceEdge.source.adjacents) {
+            if (e.target == sourceEdge.target) {
                 e.weight = Double.valueOf(res);
                 e.weightLabel.setText(res);
             }
         }
-        for(Edge e : sourceEdge.target.adjacents){
-            if(e.target == sourceEdge.source)
+        for (Edge e : sourceEdge.target.adjacents) {
+            if (e.target == sourceEdge.source) {
                 e.weight = Double.valueOf(res);
+            }
         }
-        for(Edge e : mstEdges){
-            if(e.source == sourceEdge.source && e.target == sourceEdge.target)
+        for (Edge e : mstEdges) {
+            if (e.source == sourceEdge.source && e.target == sourceEdge.target) {
                 e.weight = Double.valueOf(res);
+            }
         }
-        
+
         System.out.println("AFTER----------");
         for (NodeFX p : circles) {
             System.out.println(p.node.name + " - ");
@@ -916,6 +983,9 @@ public class CanvasController implements Initializable, ChangeListener {
         }
     }
 
+    /**
+     * Shape class for the nodes.
+     */
     public class NodeFX extends Circle {
 
         Node node;
@@ -947,7 +1017,7 @@ public class CanvasController implements Initializable, ChangeListener {
                     menuBool = true;
                 }
             });
-            menu.setOnAction(e->{
+            menu.setOnAction(e -> {
                 menuBool = false;
             });
 
