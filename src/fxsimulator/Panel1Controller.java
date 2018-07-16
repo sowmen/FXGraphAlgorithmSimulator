@@ -109,8 +109,10 @@ public class Panel1Controller implements Initializable {
     void loadNextScene() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Canvas.fxml"));
-            Scene newScene = new Scene(loader.load());
+            Parent root = loader.load();
+            Scene newScene = new Scene(root);
             cref = loader.getController();
+
             System.out.println("Controller ref: " + cref);
             newScene.getStylesheets().add(getClass().getResource("Styling.css").toExternalForm());
             FXSimulator.primaryStage.setScene(newScene);

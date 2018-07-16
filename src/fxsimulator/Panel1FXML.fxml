@@ -14,7 +14,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxsimulator.Panel1Controller">
    <children>
-      <AnchorPane fx:id="panel2" prefHeight="530.0" prefWidth="800.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="panel2" maxHeight="530.0" maxWidth="800.0" minHeight="530.0" minWidth="800.0" prefHeight="530.0" prefWidth="800.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label layoutX="210.0" layoutY="111.0" prefHeight="48.0" prefWidth="375.0" text="Select Graph Properties" textFill="#dfe4ea" AnchorPane.topAnchor="111.0">
                <font>

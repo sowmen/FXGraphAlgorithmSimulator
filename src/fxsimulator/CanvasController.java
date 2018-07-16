@@ -1,6 +1,8 @@
 package fxsimulator;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXToggleButton;
@@ -45,12 +47,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -65,6 +69,8 @@ public class CanvasController implements Initializable, ChangeListener {
     private HiddenSidesPane hiddenPane;
     @FXML
     private AnchorPane anchorRoot;
+    @FXML
+    private StackPane stackRoot;
     @FXML
     private JFXButton canvasBackButton, clearButton, resetButton, playPauseButton;
     @FXML
@@ -114,13 +120,11 @@ public class CanvasController implements Initializable, ChangeListener {
     public static TextArea textFlow = new TextArea();
     public ScrollPane textContainer = new ScrollPane();
 
-    public String topSort = "";
-    public int x = 0;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("In intit");
         hiddenPane.setContent(canvasGroup);
+//        anchorRoot.setManaged(false);
 
         ResetHandle(null);
         viewer.prefHeightProperty().bind(border.heightProperty());
@@ -135,6 +139,7 @@ public class CanvasController implements Initializable, ChangeListener {
             dfsButton.setDisable(true);
             articulationPointButton.setDisable(true);
         }
+
         if (unweighted) {
             dijkstraButton.setDisable(true);
         }
@@ -450,7 +455,7 @@ public class CanvasController implements Initializable, ChangeListener {
                         }
 
                         calculated = true;
-                    } else if (calculate && calculated && !articulationPoint & !mst) {
+                    } else if (calculate && calculated && !articulationPoint & !mst && !topSortBool) {
 
                         for (NodeFX n : circles) {
                             n.isSelected = false;
@@ -565,13 +570,13 @@ public class CanvasController implements Initializable, ChangeListener {
         menuBool = false;
         selectedNode = null;
         calculated = false;
-        topSort = "";
         System.out.println("IN CLEAR:" + circles.size());
         for (NodeFX n : circles) {
             n.isSelected = false;
             n.node.visited = false;
             n.node.previous = null;
             n.node.minDistance = Double.POSITIVE_INFINITY;
+            n.node.DAGColor = 0;
 
             FillTransition ft1 = new FillTransition(Duration.millis(300), n);
             ft1.setToValue(Color.BLACK);
@@ -643,7 +648,7 @@ public class CanvasController implements Initializable, ChangeListener {
             if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
-            } else if(directed){
+            } else if (directed) {
                 topSortButton.setDisable(false);
                 topSortButton.setSelected(false);
             }
@@ -675,7 +680,7 @@ public class CanvasController implements Initializable, ChangeListener {
             if (undirected) {
                 articulationPointButton.setDisable(false);
                 articulationPointButton.setSelected(false);
-            } else if(directed) {
+            } else if (directed) {
                 topSortButton.setDisable(false);
                 topSortButton.setSelected(false);
             }
@@ -740,7 +745,7 @@ public class CanvasController implements Initializable, ChangeListener {
         mst = false;
         articulationPoint = false;
         topSortBool = true;
-        algo.newTopSort(getRandomStart());
+        algo.newTopSort();
     }
 
     @FXML
@@ -1308,37 +1313,42 @@ public class CanvasController implements Initializable, ChangeListener {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="TopSort">
-        public void newTopSort(Node source) {
-            new TopSort(source);
+        public void newTopSort() {
+            new TopSort();
         }
 
         class TopSort {
 
-            TopSort(Node source) {
+            String reverse = "";
+            List<String> topSort = new ArrayList<>();
+            boolean cycleFound = false;
+
+            TopSort() {
 
                 //<editor-fold defaultstate="collapsed" desc="Animation Setup Distances">
-                for (NodeFX n : circles) {
-                    distances.add(n.distance);
-                    n.distance.setLayoutX(n.point.x + 20);
-                    n.distance.setLayoutY(n.point.y);
-                    canvasGroup.getChildren().add(n.distance);
-                }
-                sourceText.setLayoutX(source.circle.point.x + 20);
-                sourceText.setLayoutY(source.circle.point.y + 10);
-                canvasGroup.getChildren().add(sourceText);
                 st = new SequentialTransition();
-                source.circle.distance.setText("Dist. : " + 0);
                 //</editor-fold>
 
-                source.minDistance = 0;
-                source.visited = true;
-                source.degColor = 0;
-                x = 0;
-                CycleDetection(source, 0);
-                if (x == 1) {
-                    TopsortRecursion(source, 0);
+                cycleFound = false;
+                for (NodeFX n : circles) {
+                    if (n.node.DAGColor == 0) {
+                        cycleExists(n.node, 0);
+                    }
+                }
+                if (cycleFound == false) {
+                    for (NodeFX source : circles) {
+                        if (source.node.visited == false) {
+                            topsortRecursion(source.node, 0);
+                        }
+                    }
+
                     System.out.println("Hello World " + topSort);
-                    String reverse = new StringBuffer(topSort).reverse().toString();
+                    Collections.reverse(topSort);
+                    for (String s : topSort) {
+                        reverse += " -> " + s;
+                    }
+                    reverse = reverse.replaceFirst(" -> ", "");
+                    System.out.println(reverse);
 
                     //<editor-fold defaultstate="collapsed" desc="Animation after algorithm is finished">
                     st.setOnFinished(ev -> {
@@ -1356,9 +1366,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                 n.setStroke(Color.BLACK);
                             }
                         }
-                        FillTransition ft1 = new FillTransition(Duration.millis(time), source.circle);
-                        ft1.setToValue(Color.RED);
-                        ft1.play();
+
                         Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
                         playPauseImage.setImage(image);
                         paused = true;
@@ -1375,28 +1383,56 @@ public class CanvasController implements Initializable, ChangeListener {
                     //</editor-fold>
                 } else {
                     System.out.println("Cycle");
+                    BoxBlur blur = new BoxBlur(3, 3, 3);
                     
+                    JFXDialogLayout dialogLayout = new JFXDialogLayout();
+                    dialogLayout.setStyle("-fx-background-color:#dfe6e9");
+                    JFXDialog dialog = new JFXDialog(stackRoot, dialogLayout, JFXDialog.DialogTransition.TOP);
+                    
+                    JFXButton button = new JFXButton("OK");
+                    button.setPrefSize(50, 30);
+                    button.getStyleClass().add("dialog-button");
+                    button.setButtonType(JFXButton.ButtonType.RAISED);
+                    dialogLayout.setActions(button);
+                    Label message = new Label("     Cycle Detected!\n" +
+                                                    "Cannot run TopSort on a  Directed Cyclic Graph!");
+                    message.setId("message");
+                    dialogLayout.setBody(message);
+                    button.setOnAction(e->{
+                        dialog.close();
+                        anchorRoot.setEffect(null);
+                    });
+                    dialog.setOnDialogClosed(e->{
+                        stackRoot.toBack();
+                        anchorRoot.setEffect(null);
+                        ClearHandle(null);
+                    });
+                    
+                    stackRoot.toFront();
+                    dialog.toFront();
+                    dialog.show();
+                    anchorRoot.setEffect(blur);    
+                    dialogLayout.setPadding(new Insets(0, 0, 0, 0));
                 }
-
             }
 
-            void CycleDetection(Node source, int level) {
-                source.degColor = 1;
+            void cycleExists(Node source, int level) {
+                source.DAGColor = 1;
                 for (Edge e : source.adjacents) {
                     if (e != null) {
                         Node v = e.target;
-                        if (v.degColor == 1) {
-                            x = 1;
-                        } else if (v.degColor == 0) {
+                        if (v.DAGColor == 1) {
+                            cycleFound = true;
+                        } else if (v.DAGColor == 0) {
                             v.previous = source;
-                            TopsortRecursion(v, level + 1);
+                            cycleExists(v, level + 1);
                         }
                     }
                 }
-                source.degColor=2;
+                source.DAGColor = 2;
             }
 
-            public void TopsortRecursion(Node source, int level) {
+            public void topsortRecursion(Node source, int level) {
                 //<editor-fold defaultstate="collapsed" desc="Animation Control">
                 FillTransition ft = new FillTransition(Duration.millis(time), source.circle);
                 if (source.circle.getFill() == Color.BLACK) {
@@ -1408,7 +1444,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 for (int i = 0; i < level; i++) {
                     str = str.concat("\t");
                 }
-                str = str.concat("DFS(" + source.name + ") Enter\n");
+                str = str.concat("Recursion(" + source.name + ") Enter\n");
                 final String str2 = str;
                 FadeTransition fd = new FadeTransition(Duration.millis(10), textFlow);
                 fd.setOnFinished(e -> {
@@ -1417,12 +1453,12 @@ public class CanvasController implements Initializable, ChangeListener {
                 fd.onFinishedProperty();
                 st.getChildren().add(fd);
                 //</editor-fold>
+                source.visited = true;
                 for (Edge e : source.adjacents) {
                     if (e != null) {
                         Node v = e.target;
                         if (!v.visited) {
                             v.minDistance = source.minDistance + 1;
-                            v.visited = true;
                             v.previous = source;
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
                             if (undirected) {
@@ -1435,7 +1471,7 @@ public class CanvasController implements Initializable, ChangeListener {
                                 st.getChildren().add(ftEdge);
                             }
                             //</editor-fold>
-                            TopsortRecursion(v, level + 1);
+                            topsortRecursion(v, level + 1);
                             //<editor-fold defaultstate="collapsed" desc="Animation Control">
                             //<editor-fold defaultstate="collapsed" desc="Change Edge colors">
                             if (undirected) {
@@ -1451,9 +1487,6 @@ public class CanvasController implements Initializable, ChangeListener {
                             FillTransition ft1 = new FillTransition(Duration.millis(time), v.circle);
                             ft1.setToValue(Color.BLUEVIOLET);
                             ft1.onFinishedProperty();
-                            ft1.setOnFinished(ev -> {
-                                v.circle.distance.setText("Dist. : " + v.minDistance);
-                            });
                             st.getChildren().add(ft1);
                             //</editor-fold>
                         }
@@ -1463,9 +1496,10 @@ public class CanvasController implements Initializable, ChangeListener {
                 for (int i = 0; i < level; i++) {
                     str = str.concat("\t");
                 }
-                topSort = topSort.concat(" " + source.name);
-                System.out.println(topSort);
-                str = str.concat("DFS(" + source.name + ") Exit\n");
+                topSort.add(source.name);
+
+                //<editor-fold defaultstate="collapsed" desc="Recursion exit text">
+                str = str.concat("Recursion(" + source.name + ") Exit\n");
                 final String str1 = str;
                 fd = new FadeTransition(Duration.millis(10), textFlow);
                 fd.setOnFinished(e -> {
@@ -1473,6 +1507,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 });
                 fd.onFinishedProperty();
                 st.getChildren().add(fd);
+                //</editor-fold>
             }
         }
         //</editor-fold>

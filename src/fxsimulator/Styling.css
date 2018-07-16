@@ -202,11 +202,11 @@
 	-fx-dark-text-color: white;
 }
 
-******************************************************************************
+/******************************************************************************
  *                                                                             *
  * Button & ToggleButton                                                       *
  *                                                                             *
- *****************************************************************************
+ *****************************************************************************/
 
 /*#spec:focused:selected {
 	-fx-background-color: derive(-swatch-500, 50.0%),
@@ -293,4 +293,23 @@
 
 .text-area:focused, .text-field:focused {
 	-fx-border-color: -swatch-500;
+}
+
+#message{
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 15;
+    -fx-pref-height: 69;
+    -fx-pref-width: 380;
+    -fx-text-alignment: CENTER;
+    -fx-text-fill: #393190;
+    -fx-line-spacing: 5;
+}
+
+.dialog-button{
+    -fx-background-color: #95afc0;
+    -fx-text-fill: #535c68;
+}
+.dialog-button:hover{
+    -fx-background-color: #bdc3c7;
+    -fx-text-fill: #535c68;
 }
