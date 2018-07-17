@@ -524,6 +524,7 @@ public class CanvasController implements Initializable, ChangeListener {
             }
         } catch(Exception e){
             System.out.println("Error while play/pause: " + e);
+            ClearHandle(null);
         }
     }
 
