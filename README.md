@@ -13,3 +13,5 @@ Visualizes the following algorithms on graphs input by the user on an interactiv
 
 Demo:
 https://www.youtube.com/watch?v=s0sClvW4GWc&feature=youtu.be
+
+<b><i> IF THE PROJECT DOES NOT RUN CLEAN AND BUILD IT </i></b>
