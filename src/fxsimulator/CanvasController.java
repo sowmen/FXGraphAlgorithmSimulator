@@ -503,7 +503,7 @@ public class CanvasController implements Initializable, ChangeListener {
         System.out.println(playing + " " + paused);
         
         try{
-            if (playing && st.getStatus() == Animation.Status.RUNNING) {
+            if (playing && st != null && st.getStatus() == Animation.Status.RUNNING) {
                 Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
                 playPauseImage.setImage(image);
                 System.out.println("Pausing");
@@ -511,7 +511,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 paused = true;
                 playing = false;
                 return;
-            } else if (paused) {
+            } else if (paused && st != null) {
                 Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
                 playPauseImage.setImage(image);
                 if(st.getStatus() == Animation.Status.PAUSED)
