@@ -23,7 +23,7 @@ public class Node implements Comparable<Node> {
     public boolean visited, isArticulationPoint;
     public int visitTime = 0, lowTime = 0;
     public int DAGColor;
-    
+
     public Node(String argName) {
         name = argName;
         visited = false;

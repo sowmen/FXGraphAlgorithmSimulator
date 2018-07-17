@@ -115,7 +115,7 @@ public class Panel1Controller implements Initializable {
 
             System.out.println("Controller ref: " + cref);
             newScene.getStylesheets().add(getClass().getResource("Styling.css").toExternalForm());
-            FXSimulator.primaryStage.setScene(newScene);
+            FXSimulatorMain.primaryStage.setScene(newScene);
         } catch (IOException ex) {
             Logger.getLogger(Panel1Controller.class.getName()).log(Level.SEVERE, null, ex);
         }

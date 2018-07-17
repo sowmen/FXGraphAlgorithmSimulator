@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  *
  * @author sowme
  */
-public class FXSimulator extends Application {
+public class FXSimulatorMain extends Application {
 
     public static Stage primaryStage;
     @Override

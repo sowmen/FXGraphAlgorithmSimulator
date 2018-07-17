@@ -19,6 +19,7 @@ import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
@@ -154,7 +155,7 @@ public class CanvasController implements Initializable, ChangeListener {
                 Parent root = FXMLLoader.load(getClass().getResource("Panel1FXML.fxml"));
 
                 Scene scene = new Scene(root);
-                FXSimulator.primaryStage.setScene(scene);
+                FXSimulatorMain.primaryStage.setScene(scene);
             } catch (IOException ex) {
                 Logger.getLogger(CanvasController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -500,21 +501,29 @@ public class CanvasController implements Initializable, ChangeListener {
     public void PlayPauseHandle(ActionEvent event) {
         System.out.println("IN PLAYPAUSE");
         System.out.println(playing + " " + paused);
-        if (playing) {
-            Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
-            playPauseImage.setImage(image);
-            System.out.println("Pausing");
-            st.pause();
-            paused = true;
-            playing = false;
-            return;
-        } else if (paused) {
-            Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
-            playPauseImage.setImage(image);
-            st.play();
-            playing = true;
-            paused = false;
-            return;
+        
+        try{
+            if (playing && st.getStatus() == Animation.Status.RUNNING) {
+                Image image = new Image(getClass().getResourceAsStream("/play_arrow_black_48x48.png"));
+                playPauseImage.setImage(image);
+                System.out.println("Pausing");
+                st.pause();
+                paused = true;
+                playing = false;
+                return;
+            } else if (paused) {
+                Image image = new Image(getClass().getResourceAsStream("/pause_black_48x48.png"));
+                playPauseImage.setImage(image);
+                if(st.getStatus() == Animation.Status.PAUSED)
+                    st.play();
+                else if(st.getStatus() == Animation.Status.STOPPED)
+                    st.playFromStart();
+                playing = true;
+                paused = false;
+                return;
+            }
+        } catch(Exception e){
+            System.out.println("Error while play/pause: " + e);
         }
     }
 
@@ -567,6 +576,9 @@ public class CanvasController implements Initializable, ChangeListener {
      */
     @FXML
     public void ClearHandle(ActionEvent event) {
+        if(st != null && st.getStatus() != Animation.Status.STOPPED)
+            st.stop();
+        if(st != null) st.getChildren().clear();
         menuBool = false;
         selectedNode = null;
         calculated = false;
@@ -1048,7 +1060,7 @@ public class CanvasController implements Initializable, ChangeListener {
     }
 
     /*
-     * Algorithm Declarations -----------------------------------------------
+     * Algorithm Declarations ------------------------------------------
      */
     public class Algorithm {
 
@@ -1372,7 +1384,7 @@ public class CanvasController implements Initializable, ChangeListener {
                         paused = true;
                         playing = false;
                         textFlow.appendText("---Finished--\n\n");
-                        textFlow.appendText("Top Sort: " + reverse);
+                        textFlow.appendText("Top Sort: " + reverse + "\n");
 
                     });
                     st.onFinishedProperty();
@@ -1384,34 +1396,35 @@ public class CanvasController implements Initializable, ChangeListener {
                 } else {
                     System.out.println("Cycle");
                     BoxBlur blur = new BoxBlur(3, 3, 3);
-                    
+
                     JFXDialogLayout dialogLayout = new JFXDialogLayout();
                     dialogLayout.setStyle("-fx-background-color:#dfe6e9");
                     JFXDialog dialog = new JFXDialog(stackRoot, dialogLayout, JFXDialog.DialogTransition.TOP);
-                    
+
                     JFXButton button = new JFXButton("OK");
                     button.setPrefSize(50, 30);
                     button.getStyleClass().add("dialog-button");
                     button.setButtonType(JFXButton.ButtonType.RAISED);
                     dialogLayout.setActions(button);
-                    Label message = new Label("     Cycle Detected!\n" +
-                                                    "Cannot run TopSort on a  Directed Cyclic Graph!");
+                    Label message = new Label("     Cycle Detected!\n"
+                            + "Cannot run TopSort on a  Directed Cyclic Graph!");
                     message.setId("message");
                     dialogLayout.setBody(message);
-                    button.setOnAction(e->{
+                    button.setOnAction(e -> {
                         dialog.close();
                         anchorRoot.setEffect(null);
                     });
-                    dialog.setOnDialogClosed(e->{
+                    dialog.setOnDialogClosed(e -> {
                         stackRoot.toBack();
                         anchorRoot.setEffect(null);
                         ClearHandle(null);
                     });
                     
+                    
                     stackRoot.toFront();
                     dialog.toFront();
                     dialog.show();
-                    anchorRoot.setEffect(blur);    
+                    anchorRoot.setEffect(blur);
                     dialogLayout.setPadding(new Insets(0, 0, 0, 0));
                 }
             }

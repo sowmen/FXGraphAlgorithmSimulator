@@ -41,7 +41,8 @@ public class RightClickMenu {
 
     /**
      * Constructor for the context menu on node
-     * @param node 
+     *
+     * @param node
      */
     public RightClickMenu(NodeFX node) {
         this();
@@ -53,10 +54,11 @@ public class RightClickMenu {
             Panel1Controller.cref.changeID(node);
         });
     }
-    
+
     /**
      * Constructor for the context menu on edge
-     * @param edge 
+     *
+     * @param edge
      */
     public RightClickMenu(Edge edge) {
         this();
