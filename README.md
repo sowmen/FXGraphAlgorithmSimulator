@@ -1,6 +1,7 @@
 # Graph Algorithm Simulator using JavaFX
 
 This is a second year OOP Lab project for CSE department SUST.
+Visualizes the following algorithms on graphs input by the user on an interactive canvas.
   
 # Algorithms available :
 1. BFS
@@ -10,5 +11,7 @@ This is a second year OOP Lab project for CSE department SUST.
 5. Articulation Point
 6. Topological Sorting
 
-<i>More Algorithms will be added</i>
+Demo:
+https://www.youtube.com/watch?v=s0sClvW4GWc&feature=youtu.be
 
+<b><i> IF THE PROJECT DOES NOT RUN CLEAN AND BUILD IT </i></b>
