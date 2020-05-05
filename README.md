@@ -15,3 +15,6 @@ Demo:
 https://www.youtube.com/watch?v=s0sClvW4GWc&feature=youtu.be
 
 <b><i> IF THE PROJECT DOES NOT RUN CLEAN AND BUILD IT </i></b>
+
+The project was built using jdk-1.8. 
+If there are errors try running it on Netbeans and jdk-1.8.
