@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jfxtras-labs-samples-8.0-r6-SNAPSHOT-all.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jfoenix-8.0.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+
+<AnchorPane id="AnchorPane" fx:id="hiddenRoot" prefHeight="588.0" prefWidth="196.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="fxsimulator.CanvasController">
+   <children>
+      <ScrollPane fx:id="textContainer" layoutY="38.0" prefHeight="550.0" prefWidth="200.0" stylesheets="@TextStyle.css">
+         <content>
+            <TextFlow fx:id="textFlow" prefHeight="550.0" prefWidth="200.0" style="-fx-background-color: #dfe6e9;" />
+         </content>
+      </ScrollPane>
+      <Label alignment="CENTER" prefHeight="41.0" prefWidth="200.0" style="-fx-background-color: #b2bec3;" text="Details" underline="true">
+         <font>
+            <Font name="Roboto" size="27.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

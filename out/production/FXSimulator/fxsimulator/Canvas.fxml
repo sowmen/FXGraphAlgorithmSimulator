@@ -45,7 +45,7 @@
             </HiddenSidesPane>
             <ImageView fx:id="openHidden" fitHeight="44.0" fitWidth="44.0" layoutX="856.0" layoutY="289.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="287.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="289.0">
                <image>
-                  <Image url="@/res/openHidden.png" />
+                  <Image url="@../res/openHidden.png" />
                </image>
             </ImageView>
             <AnchorPane prefHeight="580.0" prefWidth="200.0" style="-fx-background-color: #3b5998;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -54,7 +54,7 @@
                      <graphic>
                         <ImageView fx:id="canvasBack" fitHeight="29.0" fitWidth="28.0" pickOnBounds="true">
                            <image>
-                              <Image url="@/res/arrow_back_black_96x96.png" />
+                              <Image url="@../res/arrow_back_black_96x96.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -125,7 +125,7 @@
                               <Font name="Roboto Light" size="20.0" />
                            </font>
                         </JFXToggleButton>
-                        <JFXToggleButton fx:id="articulationPointButton" alignment="BASELINE_CENTER" layoutX="15.0" layoutY="137.0" onAction="#ArticulationPointHandle" prefHeight="70.0" prefWidth="208.0" size="9.0" text="Articulation &#10;Point" toggleColor="#ff5722" toggleGroup="$algoToggleGroup" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="4">
+                        <JFXToggleButton fx:id="articulationPointButton" alignment="BASELINE_CENTER" layoutX="15.0" layoutY="137.0" onAction="#ArticulationPointHandle" prefHeight="64.0" prefWidth="208.0" size="9.0" text="Articulation &#10;Point" toggleColor="#ff5722" toggleGroup="$algoToggleGroup" toggleLineColor="#ffab91" unToggleColor="#546e7a" unToggleLineColor="#90a4ae" GridPane.rowIndex="4">
                            <font>
                               <Font name="Roboto Light" size="20.0" />
                            </font>
@@ -181,7 +181,7 @@
                      <graphic>
                         <ImageView fx:id="playPauseImage" fitHeight="28.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/res/pause_black_48x48.png" />
+                              <Image url="@../res/pause_black_48x48.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -199,7 +199,7 @@
                            <graphic>
                               <ImageView fitHeight="28.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@/res/fast_forward_black_48x48.png" />
+                                    <Image url="@../res/fast_forward_black_48x48.png" />
                                  </image>
                               </ImageView>
                            </graphic>

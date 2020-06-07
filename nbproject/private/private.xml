@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/CanvasController.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/FXSimulatorMain.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/Node.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/Edge.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/Panel1Controller.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/Arrow.java</file>
-            <file>file:/F:/Java%20Workspace/FXSimulator/src/fxsimulator/RightClickMenu.java</file>
+            <file>file:/D:/Java%20Workspace/FXSimulator/src/fxsimulator/FXSimulatorMain.java</file>
+            <file>file:/D:/Java%20Workspace/FXSimulator/src/fxsimulator/Panel1Controller.java</file>
+            <file>file:/D:/Java%20Workspace/FXSimulator/src/fxsimulator/Canvas.fxml</file>
+            <file>file:/D:/Java%20Workspace/FXSimulator/src/fxsimulator/Panel1FXML.fxml</file>
         </group>
     </open-files>
 </project-private>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="junit_4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/junit_4/junit-4.10-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/junit_4/junit-4.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/junit_4/junit-4.10-javadoc.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
